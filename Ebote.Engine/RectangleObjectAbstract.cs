@@ -18,29 +18,36 @@ public class RectangleObjectAbstract: IGameObject
 
     public Point RightBottom { get; private set; }
 
-    public RectangleObjectAbstract(Point position, float width, float height)
+    public Guid Id { get; init; } = Guid.NewGuid();
+    
+    public RectangleObjectAbstract(float width, float height)
     {
-        Position = position;
+        Position = new Point();
         Width = width;
         Height = height;
+        CalculateBorders();
+    }
+
+    public void ChangePosition(Point position)
+    {
+        Position = position;
         CalculateBorders();
     }
 
     private void CalculateBorders()
     {
         LeftTop = Position;
-        LeftBottom = new Point { X = Position.X, Y = Position.Y + Height };
-        RightTop = new Point { X = Position.X + Width, Y = Position.Y };
-        RightBottom = new Point { X = Position.X + Width, Y = Position.X + Height };
+        LeftBottom = new Point(Position.X, Position.Y + Height);
+        RightTop = new Point(Position.X + Width, Position.Y);
+        RightBottom = new Point(Position.X + Width, Position.X + Height);
     }
 
     public void Move(Point positionChange)
     {
-        var newPosition = new Point 
-        {
-            X = Position.X + positionChange.X,
-            Y = Position.Y + positionChange.Y
-        };
+        var newPosition = new Point(
+            Position.X + positionChange.X,
+            Position.Y + positionChange.Y);
+            
         Position = newPosition;
         CalculateBorders();
     }
