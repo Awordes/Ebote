@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: backend/
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+    ports:
+      - "6574:8080"
+    networks:
+      - default
