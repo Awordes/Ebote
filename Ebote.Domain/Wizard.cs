@@ -2,9 +2,13 @@ using Ebote.Engine;
 
 namespace Ebote.Domain;
 
-public class Wizard (MagicType magicType, Point spawnPosition, float width, float height)
+public class Wizard(MagicType magicType, string name, SideType sideType, Point spawnPosition, float width, float height)
     : RectangleObjectAbstract(width, height)
 {
+    public string Name { get; init; } = name;
+
+    public SideType SideType { get; init; } = sideType;
+
     public float CurrentHitPoints { get; private set; }
 
     public MagicType MagicType { get; set; } = magicType;
@@ -12,6 +16,8 @@ public class Wizard (MagicType magicType, Point spawnPosition, float width, floa
     public uint TimeToReviveInSeconds { get; set; }
 
     public Point SpawnPosition { get; set; } = spawnPosition;
+
+    public Axis EyeDirection { get; set; }
 
     public void GetDamage(float damage)
     {
