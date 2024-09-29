@@ -1,0 +1,24 @@
+{
+  "name": "ebote.presentation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run esbuild && npm run copyhtml && npm run copyassets",
+    "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../Ebote.API/wwwroot/index.js --format=esm",
+    "copyhtml": "copyfiles -u 1 src/*.html ../Ebote.API/wwwroot/",
+    "copyassets": "copyfiles -u 1 src/assets/* ../Ebote.API/wwwroot/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.24.0",
+    "esbuild-plugin-tsc": "^0.4.0"
+  },
+  "dependencies": {
+    "pixi.js": "^8.4.1"
+  }
+}

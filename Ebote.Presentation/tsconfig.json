@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+      "outDir": "../Ebote.API/wwwroot/",
+      "target": "ES6",
+      "moduleResolution": "NodeNext",
+      "module": "NodeNext"
+    }
+}
