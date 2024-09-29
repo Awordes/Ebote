@@ -27,7 +27,11 @@ export class AssetStore {
     public static readonly menuScroll =
         { alias: 'menuScroll', src: 'assets/svg/menu-scroll.svg', data: { parseAsGraphicsContext: true, }, };
 
+    public static readonly wizard =
+        { alias: 'wizard', src: 'assets/svg/wizard.svg', data: { parseAsGraphicsContext: true, }, };
+
     constructor() {
         this['menuScroll'] = this.menuScroll;
+        this['wizard'] = this.wizard;
     }
 }

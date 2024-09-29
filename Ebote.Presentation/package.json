@@ -6,7 +6,7 @@
     "watch": "nodemon --watch src/* -x \"npm run build\"",
     "build": "npm run esbuild && npm run copyhtml && npm run copyassets",
     "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../Ebote.API/wwwroot/index.js --format=esm",
-    "copyhtml": "copyfiles -u 1 src/*.html ../Ebote.API/wwwroot/",
+    "copyhtml": "copyfiles -u 1 src/**/*.html ../Ebote.API/wwwroot/",
     "copyassets": "copyfiles -u 1 src/assets/** ../Ebote.API/wwwroot/"
   },
   "keywords": [],
@@ -14,15 +14,13 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@types/alpinejs": "^3.13.10",
     "@types/node": "22.7.4",
     "copyfiles": "2.4.1",
     "esbuild": "0.24.0",
-    "esbuild-plugin-tsc": "0.4.0",
-    "nodemon": "3.1.7"
+    "esbuild-plugin-tsc": "0.4.0"
   },
   "dependencies": {
-    "alpinejs": "3.14.1",
+    "@pixi/ui": "2.1.5",
     "pixi.js": "8.4.1"
   }
 }
