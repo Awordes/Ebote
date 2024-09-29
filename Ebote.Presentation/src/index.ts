@@ -1,3 +1,7 @@
-import { DrawMenu } from './scripts/screens/main'
+import Alpine from 'alpinejs';
+import { ScreenLoader } from "./Application/Screens/ScreenLoader";
 
-DrawMenu();
+(async () => {
+    Alpine.start();
+    await ScreenLoader.Init();
+})();
