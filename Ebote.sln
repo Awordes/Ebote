@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebote.Engine", "Ebote.Engin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebote.Domain", "Ebote.Domain\Ebote.Domain.csproj", "{2E5C458C-0E5B-49FB-905E-BB51BB08A814}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebote.Infrastructure", "Ebote.Infrastructure\Ebote.Infrastructure.csproj", "{130C0137-7042-434F-B8CB-07A41733CACF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{2E5C458C-0E5B-49FB-905E-BB51BB08A814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E5C458C-0E5B-49FB-905E-BB51BB08A814}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E5C458C-0E5B-49FB-905E-BB51BB08A814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{130C0137-7042-434F-B8CB-07A41733CACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130C0137-7042-434F-B8CB-07A41733CACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130C0137-7042-434F-B8CB-07A41733CACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130C0137-7042-434F-B8CB-07A41733CACF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

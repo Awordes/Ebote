@@ -8,3 +8,13 @@ services:
       - "6574:8080"
     networks:
       - default
+  
+  ebote-db:
+    image: postgres:17-alpine
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=ebote_user
+      - POSTGRES_PASSWORD=ebote_pass
+    networks:
+      - default
