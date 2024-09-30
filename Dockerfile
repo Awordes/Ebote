@@ -1,4 +1,4 @@
-FROM node:20-alpine AS presentation-build-env
+FROM node:20.17-alpine AS presentation-build-env
 WORKDIR /App
 COPY . .
 WORKDIR /App/Ebote.Presentation
