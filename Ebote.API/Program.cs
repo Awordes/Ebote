@@ -54,6 +54,6 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.MapHub<WizardHub>("/wizard");
-app.MapControllers();
+app.MapDefaultControllerRoute();
 
 app.Run();

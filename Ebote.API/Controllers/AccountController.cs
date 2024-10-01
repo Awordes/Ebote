@@ -8,11 +8,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ebote.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]/[action]")]
     public class AccountController(IAccountRepository accountRepository) : ControllerBase
     {
-        [HttpPost("/login")]
+        [HttpPost]
+        public async Task<IActionResult> SignUp([FromBody] AccountModel model)
+        {
+            await accountRepository.AddAsync(new Domain.Entities.Account
+            {
+                Login = model.Login,
+                PasswordHash = model.PasswordHash
+            });
+
+            return Ok();
+        }
+        
+        [HttpPost]
         public async Task<IActionResult> Login([FromBody] AccountModel loginModel)
         {
             if (!await accountRepository.CheckAccountAsync(loginModel.Login, loginModel.PasswordHash))
@@ -27,22 +39,15 @@ namespace Ebote.API.Controllers
         }
         
         [Authorize]
-        [HttpGet("/logout")]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok();
         }
-        
-        [HttpPost("/signup")]
-        public async Task<IActionResult> SignUp([FromBody] AccountModel model)
-        {
-            await accountRepository.AddAsync(new Domain.Entities.Account
-            {
-                Login = model.Login,
-                PasswordHash = model.PasswordHash
-            });
-            return Ok();
-        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult CheckAuth() => Ok();
     }
 }
