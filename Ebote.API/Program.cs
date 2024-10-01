@@ -29,16 +29,21 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddSignalR();
 builder.Services.AddEboteDomain();
-builder.Services.AddInfrastructure(builder.Configuration.Get<DbSettings>());
+
+builder.Services.AddInfrastructure(builder.Configuration.GetSection(DbSettings.SectionName).Get<DbSettings>());
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+
+await scope.ServiceProvider.UseUnfrastructure();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    // options.RoutePrefix = string.Empty;
 });
 
 app.UseAuthentication();

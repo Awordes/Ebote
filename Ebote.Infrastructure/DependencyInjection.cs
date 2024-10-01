@@ -16,18 +16,24 @@ public static class DependencyInjection
         
         return services;
     }
+    
+    public static async Task<IServiceProvider> UseUnfrastructure(this IServiceProvider provider)
+    {
+        var dbContext = provider.GetRequiredService<PostgresDbContext>();
+        await dbContext.Database.MigrateAsync();
+        return provider;
+    }
 
     internal static IServiceCollection AddPostgresDbContext(this IServiceCollection services, DbSettings? dbSettings)
     {
         if (dbSettings is null)
             throw new Exception("dbSettings not found.");
             
-        services.AddDbContext<PostrgresDbContext>(builder => 
+        services.AddDbContext<PostgresDbContext>(builder => 
         {
             builder.UseNpgsql(dbSettings.ConnectionString, conf =>
             {
                 conf.SetPostgresVersion(new Version(dbSettings.MajorVersion, dbSettings.MinorVersion));
-                conf.MigrationsAssembly(nameof(Infrastructure));
                 conf.MigrationsHistoryTable(dbSettings.EfMigrationsHistoryTableName, dbSettings.SchemaName);
             });
         });

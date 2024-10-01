@@ -13,7 +13,7 @@ namespace Ebote.API.Controllers
     public class AccountController(IAccountRepository accountRepository) : ControllerBase
     {
         [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
+        public async Task<IActionResult> Login([FromBody] AccountModel loginModel)
         {
             if (!await accountRepository.CheckAccountAsync(loginModel.Login, loginModel.PasswordHash))
                 return Unauthorized();
@@ -31,6 +31,17 @@ namespace Ebote.API.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok();
+        }
+        
+        [HttpPost("/signup")]
+        public async Task<IActionResult> SignUp([FromBody] AccountModel model)
+        {
+            await accountRepository.AddAsync(new Domain.Entities.Account
+            {
+                Login = model.Login,
+                PasswordHash = model.PasswordHash
+            });
             return Ok();
         }
     }

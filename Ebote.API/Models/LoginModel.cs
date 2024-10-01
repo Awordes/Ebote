@@ -1,6 +1,6 @@
 namespace Ebote.API.Models;
 
-public class LoginModel
+public class AccountModel
 {
     public required string Login { get; set; }
 

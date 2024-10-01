@@ -5,13 +5,18 @@ using Microsoft.Extensions.Options;
 
 namespace Ebote.Infrastructure.DbContexts;
 
-public class PostrgresDbContext(DbContextOptions options, IOptions<DbSettings> dbSettings): DbContext(options)
+public class PostgresDbContext(DbContextOptions options, IOptions<DbSettings> dbSettings): DbContext(options)
 {
     public DbSet<Account> Accounts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(dbSettings.Value.SchemaName);
+
+        modelBuilder.Entity<Account>()
+            .HasIndex(x => x.Login)
+            .IsUnique();
+
         base.OnModelCreating(modelBuilder);
     }
 }
