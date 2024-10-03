@@ -1,7 +1,7 @@
 import { FancyButton } from "@pixi/ui";
 import { Assets, Graphics, Text } from "pixi.js";
 import { TextService } from "../Localization/TextService";
-import { AssetStore } from "../Screens/ScreenLoader";
+import { AssetStore } from "../Utils/AssetStore";
 
 export class CreateLobbyButton {
     public static async Init(): Promise<FancyButton> {

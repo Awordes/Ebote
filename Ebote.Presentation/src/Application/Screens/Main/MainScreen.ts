@@ -1,60 +1,48 @@
-import { AssetStore, ScreenLoader } from "../ScreenLoader";
-import { CreateLobbyButton } from "../../Components/CreateLobbyButton";
-import { Assets, Container, Graphics } from "pixi.js";
+import { ScreenLoader } from "../ScreenLoader";
+import { Assets, Container, Graphics, } from "pixi.js";
 import { SizeHelper } from "../../Utils/SizeHelper";
-import { FancyButton } from "@pixi/ui";
+import { getAccountCheckAuth } from "../../../client";
+import { LoginForm } from "../../Components/LoginForm";
+import { AssetStore } from "../../Utils/AssetStore";
+import { MenuScroll } from "../../Components/MenuScroll";
 
 export class MainScreen {
-    private static mainScreen: Container;
-    private static scroll: Graphics;
-    private static createLobbyButton: FancyButton;
-    private static textFake: Graphics;
-
     public static async Init() {
-        this.mainScreen = new Container();
-        ScreenLoader.app.stage.addChild(this.mainScreen);
+        var mainScreen = new Container();
+        ScreenLoader.app.stage.addChild(mainScreen);
         
-        this.scroll = new Graphics(await Assets.load(AssetStore.menuScroll));
-        this.mainScreen.addChild(this.scroll);
-        
-        this.createLobbyButton = await CreateLobbyButton.Init();
-        this.mainScreen.addChild(this.createLobbyButton);
+        var gameName = new Graphics(await Assets.load(AssetStore.gameName));
+        mainScreen.addChild(gameName);
 
-        this.textFake = new Graphics();
-        this.textFake.rect(0, 0, 210, 60);
-        this.textFake.fill(0xde3249);
+        var scroll = await MenuScroll.Init();
+        mainScreen.addChild(scroll);
+        scroll.position.set(gameName.x, gameName.height);
 
-        this.mainScreen.addChild(this.textFake);
+        SizeHelper.CenterPivot(mainScreen);
 
-        await this.Resize();
-    }
-
-    public static async Resize(): Promise<void> {
-        SizeHelper.CenterPivot(this.textFake);
-        SizeHelper.CenterPivot(this.scroll);
-        SizeHelper.CenterPivot(this.createLobbyButton);
-
-        this.textFake.x = this.mainScreen.width / 2;
-        this. scroll.x = this.textFake.x;
-        this.createLobbyButton.x = this.scroll.x;
-
-        this.textFake.y = this.textFake.height / 2;
-        this.scroll.y = this.textFake.height + this.scroll.height / 2;
-        this.createLobbyButton.y = this.scroll.y;
-
-        SizeHelper.CenterPivot(this.mainScreen);
-
-        this.mainScreen.position.set(
+        mainScreen.position.set(
             ScreenLoader.app.screen.width / 2,
             ScreenLoader.app.screen.height / 2
         );
 
-        this.mainScreen.scale.set(SizeHelper.GetScaleFromValues(
-            this.mainScreen.width,
-            this.mainScreen.height,
+        mainScreen.scale.set(SizeHelper.GetScaleFromValues(
+            mainScreen.width,
+            mainScreen.height,
             ScreenLoader.app.screen.width,
             ScreenLoader.app.screen.height,
             0.9
         ));
+
+        var result = await getAccountCheckAuth();
+
+        if (result.response.status != 200)
+        {
+            var loginForm = await LoginForm.Init();
+            scroll.addChild(loginForm);
+            
+            SizeHelper.CenterPivot(loginForm);
+
+            loginForm.position.set(scroll.width / 2, scroll.height / 2);
+        }
     }
 }

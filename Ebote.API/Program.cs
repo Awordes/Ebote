@@ -8,11 +8,10 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Options
 builder.Services.Configure<DbSettings>(builder.Configuration.GetSection(DbSettings.SectionName));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => options.LoginPath = "/login");
+    .AddCookie();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -53,7 +52,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 
-app.MapHub<WizardHub>("/wizard");
+app.MapHub<WizardHub>("/Wizard");
 app.MapDefaultControllerRoute();
 
 app.Run();
