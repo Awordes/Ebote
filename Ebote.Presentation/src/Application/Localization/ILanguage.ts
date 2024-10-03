@@ -4,4 +4,6 @@ export interface ILanguage {
     gameName: string;
     login: string;
     password: string;
+    signin: string;
+    signup: string;
 }

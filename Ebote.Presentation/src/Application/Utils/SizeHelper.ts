@@ -8,7 +8,7 @@ export class SizeHelper {
         return source.pivot;
     }
     
-    public static GetScaleFromContainers(source: Container, dest: Container, factor: number): number {
+    public static GetScaleFromContainers(source: Container, dest: Container, factor?: number): number {
         return this.GetScaleFromValues(source.width, source.height, dest.width, dest.height, factor);
     }
 
