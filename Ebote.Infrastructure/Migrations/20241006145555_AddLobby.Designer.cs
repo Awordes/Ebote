@@ -3,6 +3,7 @@ using System;
 using Ebote.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ebote.Infrastructure.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    partial class PostgresDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006145555_AddLobby")]
+    partial class AddLobby
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,15 +40,9 @@ namespace Ebote.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ProfileId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Login")
-                        .IsUnique();
-
-                    b.HasIndex("ProfileId")
                         .IsUnique();
 
                     b.ToTable("Accounts", "ebote");
@@ -70,42 +67,15 @@ namespace Ebote.Infrastructure.Migrations
                     b.ToTable("Lobbies", "ebote");
                 });
 
-            modelBuilder.Entity("Ebote.Domain.Entities.Profile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Profiles", "ebote");
-                });
-
-            modelBuilder.Entity("Ebote.Domain.Entities.Account", b =>
-                {
-                    b.HasOne("Ebote.Domain.Entities.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profile");
-                });
-
             modelBuilder.Entity("Ebote.Domain.Entities.Lobby", b =>
                 {
-                    b.HasOne("Ebote.Domain.Entities.Profile", "Creator")
-                        .WithMany("Lobbies")
+                    b.HasOne("Ebote.Domain.Entities.Account", "Creator")
+                        .WithMany()
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("Ebote.Domain.Entities.Profile", b =>
-                {
-                    b.Navigation("Lobbies");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,12 +9,20 @@ public class PostgresDbContext(DbContextOptions options, IOptions<DbSettings> db
 {
     public DbSet<Account> Accounts { get; set; }
 
+    public DbSet<Lobby> Lobbies { get; set; }
+
+    public DbSet<Profile> Profiles { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(dbSettings.Value.SchemaName);
 
         modelBuilder.Entity<Account>()
             .HasIndex(x => x.Login)
+            .IsUnique();
+
+        modelBuilder.Entity<Account>()
+            .HasIndex(x => x.ProfileId)
             .IsUnique();
 
         base.OnModelCreating(modelBuilder);

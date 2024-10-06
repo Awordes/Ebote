@@ -9,37 +9,42 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ebote.API.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class AccountController(IAccountRepository accountRepository) : ControllerBase
     {
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> SignUp([FromBody] AccountModel model)
         {
-            await accountRepository.AddAsync(new Domain.Entities.Account
-            {
-                Login = model.Login,
-                PasswordHash = model.PasswordHash
-            });
+            await accountRepository.CreateAsync(model.Login, model.PasswordHash);
 
             return Ok();
         }
         
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Login([FromBody] AccountModel loginModel)
         {
-            if (!await accountRepository.CheckAccountAsync(loginModel.Login, loginModel.PasswordHash))
+            var account = await accountRepository.CheckAccountAsync(loginModel.Login, loginModel.PasswordHash);
+
+            if (account?.Profile is null)
                 return Unauthorized();
             
-            var claims = new List<Claim> { new (ClaimTypes.Name, loginModel.Login) };
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.Name, loginModel.Login),
+                new (ClaimTypes.NameIdentifier, account.Profile.Id.ToString())
+            };
+
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
 
             return Ok();
         }
         
         [Authorize]
-        [HttpGet]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -47,7 +52,7 @@ namespace Ebote.API.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("[action]")]
         public IActionResult CheckAuth() => Ok();
     }
 }

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Ebote.API.Hubs;
 using Ebote.Domain;
 using Ebote.Infrastructure;
@@ -31,7 +32,10 @@ builder.Services.AddEboteDomain();
 
 builder.Services.AddInfrastructure(builder.Configuration.GetSection(DbSettings.SectionName).Get<DbSettings>());
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => 
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 var app = builder.Build();
 

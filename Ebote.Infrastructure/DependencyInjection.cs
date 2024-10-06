@@ -44,6 +44,7 @@ public static class DependencyInjection
     internal static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddTransient<IAccountRepository, AccountRepository>();
+        services.AddTransient<ILobbyRepository, LobbyRepository>();
 
         return services;
     }
