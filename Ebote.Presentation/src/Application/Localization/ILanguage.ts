@@ -6,4 +6,5 @@ export interface ILanguage {
     password: string;
     signin: string;
     signup: string;
+    logout: string;
 }

@@ -1,5 +1,6 @@
 import { ButtonOptions, FancyButton, } from "@pixi/ui";
-import { Sprite, Text, Texture, Ticker } from "pixi.js";
+import { Assets, Graphics, Sprite, Text, Texture, Ticker } from "pixi.js";
+import { AssetStore } from "../Utils/AssetStore";
 
 export class InputField extends FancyButton {
     protected isPlaceholderVisible: boolean;
@@ -26,6 +27,21 @@ export class InputField extends FancyButton {
 
         if (this.tick > 2)
             this.tick = 0;
+    }
+
+    public static async Create(placeholder?: string): Promise<InputField> {
+        return new InputField(placeholder, {
+            text: new Text({
+                text: "",
+                style: {
+                    fontFamily: AssetStore.MonocraftFont.alias,
+                    fontSize: 100,
+                }
+            }),
+            padding: 3.9,
+            defaultView: new Graphics(await Assets.load(AssetStore.input)),
+            textOffset: { y: -1.5 },
+        });
     }
 
     constructor(placeholder?: string, options?: ButtonOptions) {

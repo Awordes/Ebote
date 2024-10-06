@@ -1,29 +1,11 @@
-import { Container, ObservablePoint } from "pixi.js";
+import { Container } from "pixi.js";
 
-export class SizeHelper {
+export function ScaleAndCenter(source: Container, dest: HTMLCanvasElement | Container, factor?: number) {
+    var scaleX = dest.width / source.width;
+    var scaleY = dest.height / source.height;
 
-    public static CenterPivot(source: Container): ObservablePoint {
-        source.pivot.set(source.x + source.width / 2, source.y + source.height / 2);
+    var result = scaleX < 1 && scaleY < 1 ? Math.max(scaleX, scaleY) : Math.min(scaleX, scaleY);
 
-        return source.pivot;
-    }
-    
-    public static GetScaleFromContainers(source: Container, dest: Container, factor?: number): number {
-        return this.GetScaleFromValues(source.width, source.height, dest.width, dest.height, factor);
-    }
-
-    public static GetScaleFromValues(sourceWidth: number,
-            sourceHeight: number, destWidth: number, destHeight: number, factor?: number): number {
-
-        var scaleX = destWidth / sourceWidth;
-        var scaleY = destHeight / sourceHeight;
-
-        var result = scaleX < 1 && scaleY < 1
-            ? Math.max(scaleX, scaleY)
-            : Math.min(scaleX, scaleY);
-
-        if (!factor) factor = 1;
-
-        return result * factor;
-    }
+    source.scale.set(result * (factor ? factor : 1));
+    source.position.set((dest.width - source.width) / 2, (dest.height - source.height) / 2);
 }

@@ -1,6 +1,7 @@
 import { ILanguage } from "../ILanguage";
 
 export class Russian implements ILanguage {
+    logout = "Выйти";
     signup = "Зарегистрироваться";
     signin = "Войти";
     login = "Логин";

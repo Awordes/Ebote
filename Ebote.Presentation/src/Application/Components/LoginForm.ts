@@ -1,25 +1,33 @@
 import { Container } from "pixi.js";
-import { CreateInput } from "./CreateInput";
 import { TextService } from "../Localization/TextService";
 import { CreateButton } from "./CreateButton";
+import { FancyButton } from "@pixi/ui";
+import { InputField } from "./InputField";
 
-export async function CreateLoginForm(): Promise<Container> {
-    var loginForm = new Container();
+export class LoginForm extends Container {
+    public loginInput: InputField;
+    public passwordInput: InputField;
+    public loginButton: FancyButton;
+    public signupButton: FancyButton;
 
-    var login = await CreateInput(TextService.GetStringValue('login'));
-    loginForm.addChild(login);
-
-    var password = await CreateInput(TextService.GetStringValue('password'));
-    loginForm.addChild(password);
-    password.position.set(login.x, login.y + login.height + 5);
-
-    var loginButton = await CreateButton(TextService.GetStringValue('signin'));
-    loginForm.addChild(loginButton);
-    loginButton.position.set(password.x, password.y + password.height + 5);
-
-    var signupButton = await CreateButton(TextService.GetStringValue('signup'));
-    loginForm.addChild(signupButton);
-    signupButton.position.set(loginButton.x, loginButton.y + loginButton.height + 5);
-
-    return loginForm;
+    public static async Create() {
+        var loginForm = new LoginForm();
+        
+        loginForm.loginInput = await InputField.Create(TextService.GetStringValue('login'));
+        loginForm.addChild(loginForm.loginInput);
+    
+        loginForm.passwordInput = await InputField.Create(TextService.GetStringValue('password'));
+        loginForm.addChild(loginForm.passwordInput);
+        loginForm.passwordInput.position.set(loginForm.loginInput.x, loginForm.loginInput.y + loginForm.loginInput.height + 5);
+    
+        loginForm.loginButton = await CreateButton(TextService.GetStringValue('signin'));
+        loginForm.addChild(loginForm.loginButton);
+        loginForm.loginButton.position.set(loginForm.passwordInput.x, loginForm.passwordInput.y + loginForm.passwordInput.height + 5);
+    
+        loginForm.signupButton = await CreateButton(TextService.GetStringValue('signup'));
+        loginForm.addChild(loginForm.signupButton);
+        loginForm.signupButton.position.set(loginForm.loginButton.x, loginForm.loginButton.y + loginForm.loginButton.height + 5);
+    
+        return loginForm;
+    }
 }
