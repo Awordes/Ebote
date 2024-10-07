@@ -9,4 +9,5 @@ export interface ILanguage {
     logout: string;
     back: string;
     openLobby: string;
+    enterName: string;
 }

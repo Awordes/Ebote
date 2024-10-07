@@ -8,7 +8,7 @@ import { LobbyForm } from "../Components/LobbyForm";
 import { getAccountCheckAuth, getProfile, postAccountLogin, postAccountLogout, postLobby } from "../../client";
 
 export class MainScreen extends Container {
-    public scroll: Container;
+    public scroll: Scroll;
     public gameName: Container;
     public loginForm: LoginForm;
     public menuForm: MenuForm;
@@ -21,9 +21,9 @@ export class MainScreen extends Container {
         mainScreen.gameName = new Graphics(await Assets.load(AssetStore.gameName));
         mainScreen.addChild(mainScreen.gameName);
 
-        mainScreen.scroll = new Container();
+        mainScreen.scroll = await Scroll.Create();
         mainScreen.addChild(mainScreen.scroll);
-        mainScreen.scroll.addChild(new Graphics(await Assets.load(AssetStore.menuScroll)));
+        
         mainScreen.scroll.position.set(mainScreen.gameName.x, mainScreen.gameName.height);
         
         ScaleAndCenter(mainScreen, ScreenLoader.app.canvas, 0.9);
@@ -46,13 +46,13 @@ export class MainScreen extends Container {
 
         if (!this.lobbyForm) {
             this.lobbyForm = await LobbyForm.Create();
-            this.scroll.addChild(this.lobbyForm);
-            ScaleAndCenter(this.lobbyForm, this.scroll, 0.4);
+            this.scroll.content.addChild(this.lobbyForm);
+            ScaleAndCenter(this.lobbyForm, this.scroll.content, 0.3);
             this.lobbyForm.backButton.on('pointerup', async () => { await this.InitMenuForm(); });
 
             await postLobby();
         } else {
-            this.scroll.addChild(this.lobbyForm);
+            this.scroll.content.addChild(this.lobbyForm);
         }
     }
 
@@ -61,11 +61,11 @@ export class MainScreen extends Container {
 
         if (!this.loginForm) {
             this.loginForm = await LoginForm.Create();
-            this.scroll.addChild(this.loginForm);
-            ScaleAndCenter(this.loginForm, this.scroll, 0.6);
+            this.scroll.content.addChild(this.loginForm);
+            ScaleAndCenter(this.loginForm, this.scroll.content, 0.6);
             this.loginForm.loginButton.on('pointerup', async () => { await this.Login(); });
         } else {
-            this.scroll.addChild(this.loginForm);
+            this.scroll.content.addChild(this.loginForm);
         }
     }
 
@@ -74,12 +74,12 @@ export class MainScreen extends Container {
 
         if (!this.menuForm) {
             this.menuForm = await MenuForm.Create();
-            this.scroll.addChild(this.menuForm);
-            ScaleAndCenter(this.menuForm, this.scroll, 0.4);    
+            this.scroll.content.addChild(this.menuForm);
+            ScaleAndCenter(this.menuForm, this.scroll.content, 0.4);    
             this.menuForm.logoutButton.on('pointerup', async () => { await this.Logout(); });
             this.menuForm.createLobbyButton.on('pointerup', async () => { await this.InitLobbyForm() });
         } else {
-            this.scroll.addChild(this.menuForm);
+            this.scroll.content.addChild(this.menuForm);
         }
 
         var response = await getProfile();
@@ -89,9 +89,9 @@ export class MainScreen extends Container {
     }
 
     private ClearScroll() {
-        this.scroll.removeChild(this.menuForm);
-        this.scroll.removeChild(this.loginForm);
-        this.scroll.removeChild(this.lobbyForm);
+        this.scroll.content.removeChild(this.menuForm);
+        this.scroll.content.removeChild(this.loginForm);
+        this.scroll.content.removeChild(this.lobbyForm);
     }
     
     private async Login() {
@@ -109,5 +109,36 @@ export class MainScreen extends Container {
         await postAccountLogout();
         
         await this.CheckLogin();
+    }
+}
+
+class Scroll extends Container {
+    public background: Graphics;
+    public content: Container;
+
+    public static async Create(): Promise<Scroll> {
+        var scroll = new Scroll();
+
+        scroll.background = new Graphics(await Assets.load(AssetStore.menuScroll));
+        scroll.addChild(scroll.background);
+
+        scroll.content = new Container();
+        scroll.addChild(scroll.content);
+        scroll.content.position.set(
+            scroll.background.x + scroll.background.width * 0.2,
+            scroll.background.y + scroll.background.height * 0.15
+        );
+
+        var border = new Graphics();
+        scroll.content.addChild(border);
+        border.rect(
+            0,
+            0,
+            scroll.background.width * 0.8,
+            scroll.background.height * 0.8,
+        );
+        border.stroke({width: 0, color: 0x000000});
+
+        return scroll;
     }
 }
