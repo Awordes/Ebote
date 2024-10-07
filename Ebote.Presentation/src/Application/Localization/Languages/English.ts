@@ -1,6 +1,8 @@
 import { ILanguage } from "../ILanguage";
 
 export class English implements ILanguage {
+    openLobby = "Open lobby";
+    back = "Back";
     logout = "Sign out";
     signup = "Sign Up";
     signin = "Sign In";

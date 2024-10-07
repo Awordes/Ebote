@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Ebote.Domain\Ebote.Domain.csproj" />
     <ProjectReference Include="..\Ebote.Infrastructure\Ebote.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ebote.Core\Ebote.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

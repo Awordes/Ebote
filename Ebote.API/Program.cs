@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Ebote.API.Hubs;
-using Ebote.Domain;
+using Ebote.Core;
 using Ebote.Infrastructure;
 using Ebote.Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;

@@ -4,7 +4,7 @@ public abstract class GameCycleAbstract(int gameTickInMilliseconds)
 {
     public int GameTickInMilliseconds { get; set; } = gameTickInMilliseconds;
 
-    protected bool IsGameStarted { get; set; }
+    public bool IsGameStarted { get; protected set; }
 
     public virtual void Start()
     {

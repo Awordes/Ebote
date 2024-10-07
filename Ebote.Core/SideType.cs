@@ -1,4 +1,4 @@
-namespace Ebote.Domain;
+namespace Ebote.Core;
 
 public enum SideType
 {

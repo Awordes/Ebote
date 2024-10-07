@@ -5,6 +5,28 @@ export type AccountModel = {
     passwordHash: (string) | null;
 };
 
+export type Lobby = {
+    readonly id?: string;
+    readonly createdAt?: string;
+    creator: Profile;
+};
+
+export type MagicType = 0 | 1 | 2 | 3;
+
+export type Profile = {
+    readonly id?: string;
+    activeLobby?: Lobby;
+    lobbies?: Array<Lobby> | null;
+};
+
+export type SideType = 0 | 1;
+
+export type WizardModel = {
+    name: (string) | null;
+    sideType?: SideType;
+    magicType?: MagicType;
+};
+
 export type PostAccountSignUpData = {
     body?: AccountModel;
 };
@@ -21,10 +43,37 @@ export type PostAccountLoginResponse = (unknown);
 
 export type PostAccountLoginError = unknown;
 
-export type GetAccountLogoutResponse = (unknown);
+export type PostAccountLogoutResponse = (unknown);
 
-export type GetAccountLogoutError = unknown;
+export type PostAccountLogoutError = unknown;
 
 export type GetAccountCheckAuthResponse = (unknown);
 
 export type GetAccountCheckAuthError = unknown;
+
+export type PostLobbyResponse = (Lobby);
+
+export type PostLobbyError = unknown;
+
+export type GetLobbyListData = {
+    query?: {
+        page?: number;
+        pageSize?: number;
+    };
+};
+
+export type GetLobbyListResponse = (Array<Lobby>);
+
+export type GetLobbyListError = unknown;
+
+export type GetProfileResponse = (Profile);
+
+export type GetProfileError = unknown;
+
+export type PostProfileAddWizardData = {
+    body?: WizardModel;
+};
+
+export type PostProfileAddWizardResponse = (unknown);
+
+export type PostProfileAddWizardError = unknown;

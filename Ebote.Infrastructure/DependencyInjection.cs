@@ -45,6 +45,7 @@ public static class DependencyInjection
     {
         services.AddTransient<IAccountRepository, AccountRepository>();
         services.AddTransient<ILobbyRepository, LobbyRepository>();
+        services.AddTransient<IProfileRepository, ProfileRepository>();
 
         return services;
     }

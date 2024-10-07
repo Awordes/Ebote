@@ -3,16 +3,18 @@ import { LoginForm } from "../Components/LoginForm";
 import { ScaleAndCenter } from "../Utils/SizeHelper";
 import { AssetStore } from "../Utils/AssetStore";
 import { ScreenLoader } from "./ScreenLoader";
-import { getAccountCheckAuth, getAccountLogout, postAccountLogin } from "../../client";
 import { MenuForm } from "../Components/MenuForm";
+import { LobbyForm } from "../Components/LobbyForm";
+import { getAccountCheckAuth, getProfile, postAccountLogin, postAccountLogout, postLobby } from "../../client";
 
 export class MainScreen extends Container {
     public scroll: Container;
     public gameName: Container;
     public loginForm: LoginForm;
     public menuForm: MenuForm;
+    public lobbyForm: LobbyForm;
 
-    public static async Init() {        
+    public static async Init() {
         var mainScreen = new MainScreen();
         ScreenLoader.app.stage.addChild(mainScreen);
 
@@ -29,7 +31,7 @@ export class MainScreen extends Container {
         await mainScreen.CheckLogin();
     }
 
-    public async CheckLogin() {
+    private async CheckLogin() {
         var request = await getAccountCheckAuth();
 
         if (request.response.status == 200) {
@@ -39,36 +41,57 @@ export class MainScreen extends Container {
         }
     }
 
-    public async InitLoginForm() {
+    private async InitLobbyForm() {
+        this.ClearScroll();
+
+        if (!this.lobbyForm) {
+            this.lobbyForm = await LobbyForm.Create();
+            this.scroll.addChild(this.lobbyForm);
+            ScaleAndCenter(this.lobbyForm, this.scroll, 0.4);
+            this.lobbyForm.backButton.on('pointerup', async () => { await this.InitMenuForm(); });
+
+            await postLobby();
+        } else {
+            this.scroll.addChild(this.lobbyForm);
+        }
+    }
+
+    private async InitLoginForm() {
         this.ClearScroll();
 
         if (!this.loginForm) {
             this.loginForm = await LoginForm.Create();
             this.scroll.addChild(this.loginForm);
             ScaleAndCenter(this.loginForm, this.scroll, 0.6);
-            this.loginForm.loginButton.on('pointerdown', async () => { await this.Login(); });
+            this.loginForm.loginButton.on('pointerup', async () => { await this.Login(); });
         } else {
             this.scroll.addChild(this.loginForm);
         }
     }
 
-    public async InitMenuForm() {
+    private async InitMenuForm() {
         this.ClearScroll();
 
         if (!this.menuForm) {
             this.menuForm = await MenuForm.Create();
             this.scroll.addChild(this.menuForm);
             ScaleAndCenter(this.menuForm, this.scroll, 0.4);    
-            this.menuForm.logoutButton.on('pointerdown', async () => { await this.Logout(); });
-
+            this.menuForm.logoutButton.on('pointerup', async () => { await this.Logout(); });
+            this.menuForm.createLobbyButton.on('pointerup', async () => { await this.InitLobbyForm() });
         } else {
             this.scroll.addChild(this.menuForm);
+        }
+
+        var response = await getProfile();
+        if (response.response.ok) {
+            this.menuForm.openLobbyButton.visible = response.data.activeLobby?.id ? true : false;
         }
     }
 
     private ClearScroll() {
         this.scroll.removeChild(this.menuForm);
         this.scroll.removeChild(this.loginForm);
+        this.scroll.removeChild(this.lobbyForm);
     }
     
     private async Login() {
@@ -83,7 +106,7 @@ export class MainScreen extends Container {
     }
     
     private async Logout() {
-        await getAccountLogout();
+        await postAccountLogout();
         
         await this.CheckLogin();
     }

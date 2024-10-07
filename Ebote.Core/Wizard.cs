@@ -1,10 +1,12 @@
 using Ebote.Engine;
 
-namespace Ebote.Domain;
+namespace Ebote.Core;
 
-public class Wizard(MagicType magicType, string name, SideType sideType, Point spawnPosition, float width, float height)
+public class Wizard(Guid profileId, MagicType magicType, string name, SideType sideType, Point spawnPosition, float width, float height)
     : RectangleObjectAbstract(width, height)
 {
+    public Guid ProfileId { get; init; } = profileId;
+
     public string Name { get; init; } = name;
 
     public SideType SideType { get; init; } = sideType;

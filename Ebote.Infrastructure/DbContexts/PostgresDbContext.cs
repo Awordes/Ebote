@@ -25,6 +25,10 @@ public class PostgresDbContext(DbContextOptions options, IOptions<DbSettings> db
             .HasIndex(x => x.ProfileId)
             .IsUnique();
 
+        modelBuilder.Entity<Profile>()
+            .HasMany(x => x.Lobbies)
+            .WithOne(x => x.Creator);
+
         base.OnModelCreating(modelBuilder);
     }
 }

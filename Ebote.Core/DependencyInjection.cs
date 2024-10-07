@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Ebote.Domain;
+namespace Ebote.Core;
 
 public static class DependencyInjection
 {

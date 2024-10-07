@@ -8,6 +8,8 @@ export class AssetStore {
     public static readonly buttonDefault = { alias: 'buttonDefault', src: 'assets/svg/button-default.svg', data: { parseAsGraphicsContext: true, }, };
 
     public static readonly buttonPressed = { alias: 'buttonPressed', src: 'assets/svg/button-pressed.svg', data: { parseAsGraphicsContext: true, }, };
+
+    public static readonly buttonHover = { alias: 'buttonHover', src: 'assets/svg/button-hover.svg', data: { parseAsGraphicsContext: true, }, };
     
     public static readonly input = { alias: 'input', src: 'assets/svg/input.svg', data: { parseAsGraphicsContext: true, }, };
 

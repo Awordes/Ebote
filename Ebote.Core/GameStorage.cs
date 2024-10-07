@@ -1,4 +1,4 @@
-namespace Ebote.Domain;
+namespace Ebote.Core;
 
 public class GameStorage
 {
@@ -12,9 +12,9 @@ public class GameStorage
         return null;
     }
 
-    public Guid CreateLobby(Guid creatorId)
+    public Guid CreateLobby(Guid id, Guid creatorId)
     {
-        var lobby = new GameLobby(creatorId);
+        var lobby = new GameLobby(id, creatorId);
         GameLobbies.TryAdd(lobby.Id, lobby);
         return lobby.Id;
     }

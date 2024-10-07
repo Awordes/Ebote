@@ -1,4 +1,4 @@
-namespace Ebote.Domain;
+namespace Ebote.Core;
 
 public static class GameConstants
 {
@@ -11,11 +11,11 @@ public static class GameConstants
     public const int TimeToReviveInSeconds = 4;
 
     public const float WizardHeight = 10;
-    
+
     public const float WizardWidth = 10;
-    
+
     public const float BulletHeight = 10;
-    
+
     public const float BulletWidth = 10;
 
     public const float LobbyWidth = 1600;

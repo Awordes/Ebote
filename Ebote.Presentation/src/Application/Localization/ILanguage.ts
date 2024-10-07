@@ -7,4 +7,6 @@ export interface ILanguage {
     signin: string;
     signup: string;
     logout: string;
+    back: string;
+    openLobby: string;
 }

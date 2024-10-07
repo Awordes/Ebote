@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Ebote.Core;
 using Ebote.Domain.Entities;
 using Ebote.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -9,24 +10,27 @@ namespace Ebote.API.Controllers
     [ApiController]
     [Authorize]
     [Route("[controller]")]
-    public class LobbyController(ILobbyRepository lobbyRepository) : ControllerBase
+    public class LobbyController(ILobbyRepository lobbyRepository, IProfileRepository profileRepository, GameStorage gameStorage) : ControllerBase
     {
         [HttpPost]
         public async Task<ActionResult<Lobby>> Create()
         {
-            var accountId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
             
-            var lobby = await lobbyRepository.CreateAsync(accountId);
+            var lobby = await lobbyRepository.CreateAsync(profileId);
+            await profileRepository.UpdateActiveLobbyAsync(profileId, lobby.Id);
+
+            gameStorage.CreateLobby(lobby.Id, profileId);
 
             return Ok(lobby);
         }
 
-        [HttpGet]
+        [HttpGet("List")]
         public async Task<ActionResult<Lobby[]>> GetList(int? page, int? pageSize)
         {
-            var accountId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-            var lobbies = await lobbyRepository.GetListAsync(accountId, page, pageSize);
+            var lobbies = await lobbyRepository.GetListAsync(profileId, page, pageSize);
 
             return Ok(lobbies);
         }
