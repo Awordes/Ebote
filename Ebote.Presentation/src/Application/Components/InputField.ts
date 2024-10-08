@@ -103,7 +103,7 @@ export class InputField extends FancyButton {
             this.StartEditing();
             this.isInputFocus = false;
         }
-        else if (this.isEditing) {            
+        else if (this.isEditing) {
             this.StopEditing();
         }
     }
@@ -124,22 +124,26 @@ export class InputField extends FancyButton {
         this.textCursor.alpha = 0;
         Ticker.shared.remove(this.tickerHandler);
         this.tick = 0;
-        this.fieldValue = this.innerText.text;
+
+        if (this.fieldValue === "")
+            this.innerText.text = this.placeholder;
+
         this.isPlaceholderVisible = true;
-        this.innerText.text = this.placeholder;
         this.updateAnchor();
         window.removeEventListener('keyup', this.addKeyHandler);
     }
 
-    protected AddKey(e: KeyboardEvent) {        
+    protected AddKey(e: KeyboardEvent) {
         if (e.key === 'Backspace') {
             this.innerText.text = this.innerText.text.substring(0, this.innerText.text.length - 1);
+            this.fieldValue = this.innerText.text;
         }
         else if (e.key === 'Escape' || e.key === 'Enter') {
             this.StopEditing();
         }
         else if (e.key.length === 1) {
             this.innerText.text += e.key;
+            this.fieldValue = this.innerText.text;
         }
 
         this.updateAnchor();
