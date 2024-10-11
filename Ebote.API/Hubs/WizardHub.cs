@@ -26,10 +26,17 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
     {
         if (Context.UserIdentifier is null)
             throw new Exception("UserId not found");
+        var profile = await profileRepository.GetByIdAsync(Guid.Parse(Context.UserIdentifier));
+
+        if (profile.ActiveLobby is null)
+            throw new Exception("Active lobby not found");
+
+        var gameLobby = gameStorage.GetGameLobby(profile.ActiveLobby.Id)
+            ?? throw new Exception("Lobby not found");
 
         do
         {
-            Console.WriteLine(DateTime.Now);
+            await Clients.Caller.SendAsync(nameof(GetLobbyWizardList), gameLobby.WizardsToAdd);
             await Task.Delay(GameConstants.GameTickInMilliseconds);
         } while(Users.Contains(Context.ConnectionId));
     }

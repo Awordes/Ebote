@@ -10,7 +10,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     private Dictionary<Guid, IGameObject> GameObjects { get; set; } = [];
 
-    private ICollection<WizardToAdd> WizardsToAdd { get; set; } = [];
+    public ICollection<WizardToAdd> WizardsToAdd { get; set; } = [];
 
     public override void Start()
     {

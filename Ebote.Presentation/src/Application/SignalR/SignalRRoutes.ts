@@ -9,6 +9,6 @@ class SignalRequest {
 }
 
 export abstract class WizardHub {
-    public static hubName = "Wizard";
-    public static getLobbyWizardList = new SignalRequest("GetLobbyWizardList");
+    public static hubName = 'Wizard';
+    public static getLobbyWizardList = new SignalRequest('GetLobbyWizardList', 'GetLobbyWizardList');
 }

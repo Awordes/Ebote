@@ -6,6 +6,7 @@ import { MenuForm } from "../Components/MenuForm";
 import { LobbyForm } from "../Components/LobbyForm";
 import { LoginForm } from "../Components/LoginForm";
 import { getAccountCheckAuth, getProfile, postAccountLogin, postAccountLogout, postLobby } from "../../client";
+import { GetLobbyWizardList } from "../SignalR/GameStateRequest";
 
 export async function InitMainScreen() {
     let mainScreen = new MainScreen();
@@ -32,10 +33,13 @@ export async function InitMainScreen() {
 
     mainScreen.menuForm = await MenuForm.Create();
     ScaleAndCenterToContainer(mainScreen.menuForm, mainScreen.content, 0.7);
+
     mainScreen.menuForm.createLobbyButton.on('pointerup', async ()  => {
         await postLobby();
         await mainScreen.ShowScreen('lobby');
+        await GetLobbyWizardList();
     });
+
     mainScreen.menuForm.logoutButton.on('pointerup', async ()  => {
         await mainScreen.Logout();
         await mainScreen.ShowScreen('login');
@@ -47,6 +51,7 @@ export async function InitMainScreen() {
 
     mainScreen.loginForm = await LoginForm.Create();
     ScaleAndCenterToContainer(mainScreen.loginForm, mainScreen.content);
+
     mainScreen.loginForm.loginButton.on('pointerup', async () => {
         await mainScreen.Login();
 
