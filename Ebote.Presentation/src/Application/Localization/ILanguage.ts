@@ -10,4 +10,5 @@ export interface ILanguage {
     back: string;
     openLobby: string;
     enterName: string;
+    team: string;
 }

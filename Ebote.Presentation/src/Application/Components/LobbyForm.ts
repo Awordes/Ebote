@@ -2,26 +2,51 @@ import { FancyButton, RadioGroup } from "@pixi/ui";
 import { Container, Graphics, HTMLText } from "pixi.js";
 import { CreateButton } from "./CreateButton";
 import { TextService } from "../Localization/TextService";
-import { SideType } from "../../client";
 import { CreateWizardSelector } from "./CreateWizardSelector";
 import { WizardDescriptions } from "../Utils/WizardDescriptions";
 import { AssetStore } from "../Utils/AssetStore";
 import { ScaleToContainer } from "../Utils/SizeHelper";
 import { InputField } from "./InputField";
+import { CreateSideTypeSelector as CreateSideSelector } from "./CreateSideTypeSelector";
 
 export class LobbyForm extends Container {
     public backButton: FancyButton;
     public magicType: RadioGroup;
-    public sideType: SideType;
     public description: HTMLText;
+    public sideType: RadioGroup;
+    public wizardName: InputField;
 
     public static async Create(): Promise<LobbyForm> {
         let lobbyForm = new LobbyForm();
 
         lobbyForm.backButton = await CreateButton(TextService.GetStringValue('back'));
 
-        let wizardName = await InputField.Create(TextService.GetStringValue('enterName'));
-        wizardName.position.set(lobbyForm.backButton.width + 1, 0);
+        lobbyForm.wizardName = await InputField.Create(TextService.GetStringValue('enterName'));
+        lobbyForm.wizardName.position.set(lobbyForm.backButton.width + 1, 0);
+        
+        let sideDescriptionBorder = new Graphics();
+        sideDescriptionBorder.rect(
+            lobbyForm.wizardName.x + lobbyForm.wizardName.width + 1,
+            0,
+            lobbyForm.wizardName.width,
+            lobbyForm.wizardName.height
+        );
+        sideDescriptionBorder.fill(0x000000);
+
+        let sideDescription = new HTMLText({
+            text: TextService.GetStringValue('team'),
+            style: {
+                fontFamily: AssetStore.MonocraftFont.alias,
+                fontSize: 100,
+                wordWrap: true,
+                wordWrapWidth: 2700
+            }
+        });
+        ScaleToContainer(sideDescription, sideDescriptionBorder);
+        sideDescription.position.set(lobbyForm.wizardName.x + lobbyForm.wizardName.width + 1, 0);
+
+        lobbyForm.sideType = await CreateSideSelector();
+        lobbyForm.sideType.position.set(sideDescription.x + sideDescription.width + 1, 0);
 
         lobbyForm.magicType = await CreateWizardSelector();
         lobbyForm.magicType.position.set(0, lobbyForm.backButton.height + 5);
@@ -51,7 +76,9 @@ export class LobbyForm extends Container {
         lobbyForm.addChild(lobbyForm.description);
         lobbyForm.addChild(lobbyForm.backButton);
         lobbyForm.addChild(lobbyForm.magicType);
-        lobbyForm.addChild(wizardName);
+        lobbyForm.addChild(lobbyForm.sideType)
+        lobbyForm.addChild(sideDescription);
+        lobbyForm.addChild(lobbyForm.wizardName);
 
         return lobbyForm;
     }
