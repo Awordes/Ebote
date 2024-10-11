@@ -3,7 +3,7 @@ import { UnresolvedAsset } from "pixi.js";
 export class AssetStore {
     [key: string]: UnresolvedAsset;
 
-    public static readonly menuScroll: UnresolvedAsset = { alias: 'menuScroll', src: 'assets/svg/menu-scroll.svg', data: { parseAsGraphicsContext: true, }, };
+    public static readonly scroll: UnresolvedAsset = { alias: 'Scroll', src: 'assets/svg/scroll.svg', data: { parseAsGraphicsContext: true, }, };
 
     public static readonly buttonDefault: UnresolvedAsset = { alias: 'buttonDefault', src: 'assets/svg/button-default.svg', data: { parseAsGraphicsContext: true, }, };
 

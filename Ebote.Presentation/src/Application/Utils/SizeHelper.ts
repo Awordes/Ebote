@@ -1,16 +1,21 @@
 import { Container } from "pixi.js";
 
-export function ScaleAndCenter(source: Container, dest: HTMLCanvasElement | Container, factor?: number) {
-    var scaleX = dest.width / source.width;
-    var scaleY = dest.height / source.height;
+export function ScaleAndCenterToContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number) {
+    ScaleToContainer(source, dest, factor);
+    CenterPosition(source, dest);
+}
 
-    source.scale.set(Math.min(scaleX, scaleY) * (factor ? factor : 1));
+export function ScaleToContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number) {
+    source.scale.set(GetScaleToContainer(source, dest, factor));
+}
+
+export function CenterPosition(source: Container, dest: HTMLCanvasElement | Container) {
     source.position.set((dest.width - source.width) / 2, (dest.height - source.height) / 2);
 }
 
-export function ScaleContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number) {
-    var scaleX = dest.width / source.width;
-    var scaleY = dest.height / source.height;
+export function GetScaleToContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number): number {
+    let scaleX = dest.width / source.width;
+    let scaleY = dest.height / source.height;
 
-    source.scale.set(Math.min(scaleX, scaleY) * (factor ? factor : 1));
+    return Math.min(scaleX, scaleY) * (factor ? factor : 1);
 }

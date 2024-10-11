@@ -1,5 +1,5 @@
 import { Assets, Container, Graphics, UnresolvedAsset } from "pixi.js";
-import { ScaleAndCenter } from "../Utils/SizeHelper";
+import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
 
 export async function CreateWizardButton(backgroundAsset: UnresolvedAsset, wizardAsset: UnresolvedAsset): Promise<Container> {
     var button = new Container();
@@ -10,7 +10,7 @@ export async function CreateWizardButton(backgroundAsset: UnresolvedAsset, wizar
     var wizard = new Graphics(await Assets.load(wizardAsset));
     button.addChild(wizard);
 
-    ScaleAndCenter(wizard, background, 0.8);
+    ScaleAndCenterToContainer(wizard, background, 0.7);
 
     return button;
 }

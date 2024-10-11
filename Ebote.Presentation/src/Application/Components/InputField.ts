@@ -32,7 +32,7 @@ export class InputField extends FancyButton {
     public static async Create(placeholder?: string): Promise<InputField> {
         return new InputField(placeholder, {
             text: new Text({
-                text: "",
+                text: '',
                 style: {
                     fontFamily: AssetStore.MonocraftFont.alias,
                     fontSize: 100,

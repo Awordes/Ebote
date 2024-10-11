@@ -1,10 +1,10 @@
 import { FancyButton } from "@pixi/ui";
-import { Assets, Graphics, Text } from "pixi.js";
+import { Assets, Graphics, HTMLText } from "pixi.js";
 import { AssetStore } from "../Utils/AssetStore";
 
 export async function CreateButton (text?: string): Promise<FancyButton> {
-    var button = new FancyButton({
-        text: new Text({
+    let button = new FancyButton({
+        text: new HTMLText({
             text: text,
             style: {
                 fontFamily: AssetStore.MonocraftFont.alias,

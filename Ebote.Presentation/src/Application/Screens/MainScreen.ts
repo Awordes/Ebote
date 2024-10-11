@@ -1,144 +1,123 @@
 import { Assets, Container, Graphics } from "pixi.js";
-import { LoginForm } from "../Components/LoginForm";
-import { ScaleAndCenter } from "../Utils/SizeHelper";
 import { AssetStore } from "../Utils/AssetStore";
 import { ScreenLoader } from "./ScreenLoader";
+import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
 import { MenuForm } from "../Components/MenuForm";
 import { LobbyForm } from "../Components/LobbyForm";
+import { LoginForm } from "../Components/LoginForm";
 import { getAccountCheckAuth, getProfile, postAccountLogin, postAccountLogout, postLobby } from "../../client";
 
-export class MainScreen extends Container {
-    public scroll: Scroll;
-    public gameName: Container;
-    public loginForm: LoginForm;
+export async function InitMainScreen() {
+    let mainScreen = new MainScreen();
+
+    mainScreen.gameName = new Graphics(await Assets.load(AssetStore.gameName));
+    mainScreen.addChild(mainScreen.gameName);
+
+    mainScreen.scroll = new Graphics(await Assets.load(AssetStore.scroll));
+    mainScreen.addChild(mainScreen.scroll);
+    mainScreen.scroll.position.set(0, mainScreen.gameName.height + 1);
+
+    mainScreen.content = new Container();
+    mainScreen.addChild(mainScreen.content);
+    mainScreen.content.position.set(
+        mainScreen.scroll.x + 29,
+        mainScreen.scroll.y + 10
+    );
+
+    let border = new Graphics();
+    mainScreen.content.addChild(border);
+    border.rect(0, 0, mainScreen.scroll.width - 34, mainScreen.scroll.height - 25);
+    border.stroke({width: 1, color:0x000000});
+    border.alpha = 0;
+
+    mainScreen.menuForm = await MenuForm.Create();
+    ScaleAndCenterToContainer(mainScreen.menuForm, mainScreen.content, 0.7);
+    mainScreen.menuForm.createLobbyButton.on('pointerup', async ()  => {
+        await postLobby();
+        await mainScreen.ShowScreen('lobby');
+    });
+    mainScreen.menuForm.logoutButton.on('pointerup', async ()  => {
+        await mainScreen.Logout();
+        await mainScreen.ShowScreen('login');
+    });
+    
+    mainScreen.lobbyForm = await LobbyForm.Create();
+    ScaleAndCenterToContainer(mainScreen.lobbyForm, mainScreen.content);
+    mainScreen.lobbyForm.backButton.on('pointerup', async () => { mainScreen.ShowScreen('menu'); });
+
+    mainScreen.loginForm = await LoginForm.Create();
+    ScaleAndCenterToContainer(mainScreen.loginForm, mainScreen.content);
+    mainScreen.loginForm.loginButton.on('pointerup', async () => {
+        await mainScreen.Login();
+
+        await mainScreen.ShowScreen('menu');
+    });
+
+    mainScreen.content.addChild(mainScreen.menuForm);
+    mainScreen.content.addChild(mainScreen.lobbyForm);
+    mainScreen.content.addChild(mainScreen.loginForm);
+
+    ScaleAndCenterToContainer(mainScreen, ScreenLoader.app.canvas, 0.9);
+    ScreenLoader.app.stage.addChild(mainScreen);
+
+    mainScreen.ShowScreen('menu');
+}
+
+class MainScreen extends Container {
+    public gameName: Graphics;
+    public scroll: Graphics;
+    public content: Container;
     public menuForm: MenuForm;
     public lobbyForm: LobbyForm;
+    public loginForm: LoginForm;
 
-    public static async Init() {
-        var mainScreen = new MainScreen();
-        ScreenLoader.app.stage.addChild(mainScreen);
+    public async ShowScreen(screenName: 'menu' | 'login' | 'lobby') {
+        this.menuForm.visible = false;
+        this.lobbyForm.visible = false;
+        this.loginForm.visible = false;
 
-        mainScreen.gameName = new Graphics(await Assets.load(AssetStore.gameName));
-        mainScreen.addChild(mainScreen.gameName);
+        if (!(await this.isLogged())) {
+            this.loginForm.visible = true;
+            return;
+        }
 
-        mainScreen.scroll = await Scroll.Create();
-        mainScreen.addChild(mainScreen.scroll);
+        switch (screenName) {
+            case 'menu':
+                this.menuForm.visible = true;
+                let profile = await getProfile();
         
-        mainScreen.scroll.position.set(mainScreen.gameName.x, mainScreen.gameName.height);
+                if (profile.response.ok && profile.data.activeLobby)
+                    this.menuForm.openLobbyButton.visible = true;
+                else
+                    this.menuForm.openLobbyButton.visible = false;
+                break;
+            case 'lobby':
+                this.lobbyForm.visible = true;
+                break;
+            case 'login':
+                this.loginForm.visible = true;
+                break;
+        }
+    }
+
+    public async isLogged(): Promise<boolean> {
+        let request = await getAccountCheckAuth();
+
+        console.log(request);
         
-        ScaleAndCenter(mainScreen, ScreenLoader.app.canvas, 0.9);
-
-        await mainScreen.CheckLogin();
+        return request.response.ok;
     }
 
-    private async CheckLogin() {
-        var request = await getAccountCheckAuth();
-
-        if (request.response.status == 200) {
-            await this.InitMenuForm();
-        } else {
-            await this.InitLoginForm();
-        }
-    }
-
-    private async InitLobbyForm() {
-        this.ClearScroll();
-
-        if (!this.lobbyForm) {
-            this.lobbyForm = await LobbyForm.Create();
-            this.scroll.content.addChild(this.lobbyForm);
-            ScaleAndCenter(this.lobbyForm, this.scroll.content, 0.3);
-            this.lobbyForm.backButton.on('pointerup', async () => { await this.InitMenuForm(); });
-
-            await postLobby();
-        } else {
-            this.scroll.content.addChild(this.lobbyForm);
-        }
-    }
-
-    private async InitLoginForm() {
-        this.ClearScroll();
-
-        if (!this.loginForm) {
-            this.loginForm = await LoginForm.Create();
-            this.scroll.content.addChild(this.loginForm);
-            ScaleAndCenter(this.loginForm, this.scroll.content, 0.6);
-            this.loginForm.loginButton.on('pointerup', async () => { await this.Login(); });
-        } else {
-            this.scroll.content.addChild(this.loginForm);
-        }
-    }
-
-    private async InitMenuForm() {
-        this.ClearScroll();
-
-        if (!this.menuForm) {
-            this.menuForm = await MenuForm.Create();
-            this.scroll.content.addChild(this.menuForm);
-            ScaleAndCenter(this.menuForm, this.scroll.content, 0.4);    
-            this.menuForm.logoutButton.on('pointerup', async () => { await this.Logout(); });
-            this.menuForm.createLobbyButton.on('pointerup', async () => { await this.InitLobbyForm() });
-        } else {
-            this.scroll.content.addChild(this.menuForm);
-        }
-
-        var response = await getProfile();
-        if (response.response.ok) {
-            this.menuForm.openLobbyButton.visible = response.data.activeLobby?.id ? true : false;
-        }
-    }
-
-    private ClearScroll() {
-        this.scroll.content.removeChild(this.menuForm);
-        this.scroll.content.removeChild(this.loginForm);
-        this.scroll.content.removeChild(this.lobbyForm);
-    }
-    
-    private async Login() {
+    public async Login() {
         await postAccountLogin({
             body: {
                 login: this.loginForm.loginInput.fieldValue,
                 passwordHash: this.loginForm.passwordInput.fieldValue
             }
         });
-        
-        await this.CheckLogin();
     }
-    
-    private async Logout() {
+
+    public async Logout() {
         await postAccountLogout();
-        
-        await this.CheckLogin();
-    }
-}
-
-class Scroll extends Container {
-    public background: Graphics;
-    public content: Container;
-
-    public static async Create(): Promise<Scroll> {
-        var scroll = new Scroll();
-
-        scroll.background = new Graphics(await Assets.load(AssetStore.menuScroll));
-        scroll.addChild(scroll.background);
-
-        scroll.content = new Container();
-        scroll.addChild(scroll.content);
-        scroll.content.position.set(
-            scroll.background.x + scroll.background.width * 0.2,
-            scroll.background.y + scroll.background.height * 0.15
-        );
-
-        var border = new Graphics();
-        scroll.content.addChild(border);
-        border.rect(
-            0,
-            0,
-            scroll.background.width * 0.8,
-            scroll.background.height * 0.8,
-        );
-        border.stroke({width: 0, color: 0x000000});
-
-        return scroll;
     }
 }
