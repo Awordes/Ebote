@@ -22,7 +22,7 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         return base.OnDisconnectedAsync(exception);
     }
 
-    public async Task GetLobbyWizardList()
+    public async Task GetWizardActiveLobbyAsync()
     {
         if (Context.UserIdentifier is null)
             throw new Exception("UserId not found");
@@ -35,10 +35,14 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         if (!gameStorage.Lobbies.TryGetValue(profile.ActiveLobby.Id, out var gameLobby))
             throw new Exception("Lobby not found");
 
+        Console.WriteLine($"User {Context.UserIdentifier} start watch lobby {gameLobby.Id}");
+
         do
         {
-            await Clients.Caller.SendAsync(nameof(GetLobbyWizardList), gameLobby.WizardsToAdd);
+            await Clients.Caller.SendAsync(nameof(GetWizardActiveLobbyAsync), gameLobby);
             await Task.Delay(GameConstants.GameTickInMilliseconds);
         } while(Users.Contains(Context.ConnectionId));
+
+        Console.WriteLine($"User {Context.UserIdentifier} stop watch lobby {gameLobby.Id}");
     }
 }
