@@ -8,7 +8,7 @@ namespace Ebote.API.Hubs;
 [Authorize]
 public class WizardHub(IProfileRepository profileRepository, GameStorage gameStorage): Hub
 {
-    private static HashSet<string> Users = [];
+    private static readonly HashSet<string> Users = [];
 
     public override Task OnConnectedAsync()
     {
@@ -26,13 +26,14 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
     {
         if (Context.UserIdentifier is null)
             throw new Exception("UserId not found");
+
         var profile = await profileRepository.GetByIdAsync(Guid.Parse(Context.UserIdentifier));
 
         if (profile.ActiveLobby is null)
             throw new Exception("Active lobby not found");
 
-        var gameLobby = gameStorage.GetGameLobby(profile.ActiveLobby.Id)
-            ?? throw new Exception("Lobby not found");
+        if (!gameStorage.Lobbies.TryGetValue(profile.ActiveLobby.Id, out var gameLobby))
+            throw new Exception("Lobby not found");
 
         do
         {

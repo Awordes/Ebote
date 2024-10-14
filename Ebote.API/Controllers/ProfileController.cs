@@ -21,10 +21,8 @@ namespace Ebote.API.Controllers
             var profile = await profileRepository.GetByIdAsync(profileId);
 
             if (profile.ActiveLobby is not null
-                && gameStorage.GetGameLobby(profile.ActiveLobby.Id) is null)
-            {
+                && gameStorage.Lobbies.ContainsKey(profile.ActiveLobby.Id))
                 await profileRepository.ClearActiveLobbyAsync(profileId);
-            }
 
             return Ok(profile);
         }
@@ -36,19 +34,12 @@ namespace Ebote.API.Controllers
 
             var profile = await profileRepository.GetByIdAsync(profileId);
 
-            if (profile.ActiveLobby is null)
-                throw new Exception("Not found active lobby");
+            if (profile.ActiveLobby is null) throw new Exception("Not found active lobby");
 
-            var lobby = gameStorage.GetGameLobby(profile.ActiveLobby.Id)
-                ?? throw new Exception("Not found lobby");
+            if (!gameStorage.Lobbies.TryGetValue(profile.ActiveLobby.Id, out var gameLobby))
+                throw new Exception("Game lobby not found.");
 
-            if (lobby.IsGameStarted)
-                throw new Exception("Lobby already started");
-
-            if (lobby.IsWizardAlreadyAdded(profileId))
-                throw new Exception("Wizard already added");
-
-            lobby.AddWizard(profileId, model.MagicType, model.SideType, model.Name);
+            gameLobby.AddWizard(profileId, model.MagicType, model.SideType, model.Name);
 
             return Ok();
         }

@@ -20,7 +20,7 @@ namespace Ebote.API.Controllers
             var lobby = await lobbyRepository.CreateAsync(profileId);
             await profileRepository.UpdateActiveLobbyAsync(profileId, lobby.Id);
 
-            gameStorage.CreateLobby(lobby.Id, profileId);
+            gameStorage.Lobbies.TryAdd(lobby.Id, new GameLobby(lobby.Id, profileId));
 
             return Ok(lobby);
         }
