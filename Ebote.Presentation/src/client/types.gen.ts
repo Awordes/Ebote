@@ -5,6 +5,24 @@ export type AccountModel = {
     passwordHash: (string) | null;
 };
 
+export type Axis = {
+    x?: number;
+    y?: number;
+};
+
+export type GameLobby = {
+    gameTickInMilliseconds?: number;
+    readonly isGameStarted?: boolean;
+    id?: string;
+    creatorId?: string;
+    readonly gameTimeInSeconds?: number;
+    startTime?: (string) | null;
+    wizards?: {
+        [key: string]: Wizard;
+    } | null;
+    wizardsToAdd?: Array<WizardToAdd> | null;
+};
+
 export type Lobby = {
     readonly id?: string;
     readonly createdAt?: string;
@@ -12,6 +30,11 @@ export type Lobby = {
 };
 
 export type MagicType = 0 | 1 | 2 | 3;
+
+export type Point = {
+    x?: number;
+    y?: number;
+};
 
 export type Profile = {
     readonly id?: string;
@@ -21,10 +44,36 @@ export type Profile = {
 
 export type SideType = 0 | 1;
 
+export type Wizard = {
+    position?: Point;
+    height?: number;
+    width?: number;
+    leftTop?: Point;
+    leftBottom?: Point;
+    rightTop?: Point;
+    rightBottom?: Point;
+    id?: string;
+    profileId?: string;
+    name?: (string) | null;
+    sideType?: SideType;
+    readonly currentHitPoints?: number;
+    magicType?: MagicType;
+    timeToReviveInSeconds?: number;
+    spawnPosition?: Point;
+    eyeDirection?: Axis;
+};
+
 export type WizardModel = {
     name: (string) | null;
     sideType?: SideType;
     magicType?: MagicType;
+};
+
+export type WizardToAdd = {
+    profileId?: string;
+    magicType?: MagicType;
+    sideType?: SideType;
+    name?: (string) | null;
 };
 
 export type PostAccountSignUpData = {
@@ -77,3 +126,7 @@ export type PostProfileAddWizardData = {
 export type PostProfileAddWizardResponse = (unknown);
 
 export type PostProfileAddWizardError = unknown;
+
+export type GetProfileGetActiveLobbyStateResponse = (GameLobby);
+
+export type GetProfileGetActiveLobbyStateError = unknown;

@@ -16,6 +16,68 @@ export const AccountModelSchema = {
     additionalProperties: false
 } as const;
 
+export const AxisSchema = {
+    type: 'object',
+    properties: {
+        x: {
+            type: 'number',
+            format: 'float'
+        },
+        y: {
+            type: 'number',
+            format: 'float'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const GameLobbySchema = {
+    type: 'object',
+    properties: {
+        gameTickInMilliseconds: {
+            type: 'integer',
+            format: 'int32'
+        },
+        isGameStarted: {
+            type: 'boolean',
+            readOnly: true
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        creatorId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        gameTimeInSeconds: {
+            type: 'number',
+            format: 'float',
+            readOnly: true
+        },
+        startTime: {
+            type: 'string',
+            format: 'date-time',
+            nullable: true
+        },
+        wizards: {
+            type: 'object',
+            additionalProperties: {
+                '$ref': '#/components/schemas/Wizard'
+            },
+            nullable: true
+        },
+        wizardsToAdd: {
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/WizardToAdd'
+            },
+            nullable: true
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const LobbySchema = {
     required: ['creator'],
     type: 'object',
@@ -41,6 +103,21 @@ export const MagicTypeSchema = {
     enum: [0, 1, 2, 3],
     type: 'integer',
     format: 'int32'
+} as const;
+
+export const PointSchema = {
+    type: 'object',
+    properties: {
+        x: {
+            type: 'number',
+            format: 'float'
+        },
+        y: {
+            type: 'number',
+            format: 'float'
+        }
+    },
+    additionalProperties: false
 } as const;
 
 export const ProfileSchema = {
@@ -71,6 +148,69 @@ export const SideTypeSchema = {
     format: 'int32'
 } as const;
 
+export const WizardSchema = {
+    type: 'object',
+    properties: {
+        position: {
+            '$ref': '#/components/schemas/Point'
+        },
+        height: {
+            type: 'number',
+            format: 'float'
+        },
+        width: {
+            type: 'number',
+            format: 'float'
+        },
+        leftTop: {
+            '$ref': '#/components/schemas/Point'
+        },
+        leftBottom: {
+            '$ref': '#/components/schemas/Point'
+        },
+        rightTop: {
+            '$ref': '#/components/schemas/Point'
+        },
+        rightBottom: {
+            '$ref': '#/components/schemas/Point'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        profileId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        name: {
+            type: 'string',
+            nullable: true
+        },
+        sideType: {
+            '$ref': '#/components/schemas/SideType'
+        },
+        currentHitPoints: {
+            type: 'number',
+            format: 'float',
+            readOnly: true
+        },
+        magicType: {
+            '$ref': '#/components/schemas/MagicType'
+        },
+        timeToReviveInSeconds: {
+            type: 'integer',
+            format: 'int32'
+        },
+        spawnPosition: {
+            '$ref': '#/components/schemas/Point'
+        },
+        eyeDirection: {
+            '$ref': '#/components/schemas/Axis'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const WizardModelSchema = {
     required: ['name'],
     type: 'object',
@@ -84,6 +224,27 @@ export const WizardModelSchema = {
         },
         magicType: {
             '$ref': '#/components/schemas/MagicType'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const WizardToAddSchema = {
+    type: 'object',
+    properties: {
+        profileId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        magicType: {
+            '$ref': '#/components/schemas/MagicType'
+        },
+        sideType: {
+            '$ref': '#/components/schemas/SideType'
+        },
+        name: {
+            type: 'string',
+            nullable: true
         }
     },
     additionalProperties: false

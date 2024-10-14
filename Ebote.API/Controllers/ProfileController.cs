@@ -43,5 +43,21 @@ namespace Ebote.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult<GameLobby>> GetActiveLobbyState()
+        {
+            
+            var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+            var profile = await profileRepository.GetByIdAsync(profileId);
+
+            if (profile.ActiveLobby is null) throw new Exception("Not found active lobby");
+
+            if (!gameStorage.Lobbies.TryGetValue(profile.ActiveLobby.Id, out var gameLobby))
+                throw new Exception("Game lobby not found.");
+            
+            return Ok(gameLobby);
+        }
     }
 }

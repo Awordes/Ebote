@@ -12,7 +12,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public DateTime? StartTime { get; set; }
 
-    public Dictionary<Guid, IGameObject> GameObjects { get; init; } = [];
+    public Dictionary<Guid, Wizard> Wizards { get; init; } = [];
 
     public ICollection<WizardToAdd> WizardsToAdd { get; init; } = [];
 
@@ -56,7 +56,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
                 GameConstants.WizardWidth,
                 GameConstants.WizardHeight);
 
-            GameObjects.TryAdd(wizard.Id, wizard);
+            Wizards.TryAdd(wizard.Id, wizard);
         }
 
         StartTime = DateTime.Now;
@@ -66,7 +66,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public override Task Update()
     {
-        foreach (var gameObject in GameObjects)
+        foreach (var wizard in Wizards)
         {
             // todo
         }
