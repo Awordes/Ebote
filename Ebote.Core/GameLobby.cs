@@ -20,6 +20,8 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
     {
         if (IsGameStarted) throw new Exception("Game already started.");
 
+        if (WizardsToAdd.Any(x => x.ProfileId == profileId)) throw new Exception("Profile already added.");
+
         WizardsToAdd.Add(new WizardToAdd(profileId, magicType, sideType, name));
     }
 

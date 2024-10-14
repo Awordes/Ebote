@@ -2,11 +2,11 @@ namespace Ebote.Core;
 
 public enum MagicType
 {
-    Fire,
-
-    Water,
+    Air,
 
     Earth,
 
-    Air
+    Fire,
+
+    Water
 }

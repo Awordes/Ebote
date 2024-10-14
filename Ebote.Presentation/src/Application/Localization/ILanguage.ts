@@ -1,4 +1,5 @@
 export interface ILanguage {
+    wizardsInLobbyy: string;
     startGame: string;
     addWizard: string;
     createLobby: string;

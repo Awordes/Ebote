@@ -1,6 +1,7 @@
 import { ILanguage } from "../ILanguage";
 
 export class English implements ILanguage {
+    wizardsInLobbyy = "Wizards in lobby:";
     startGame = "Start game";
     addWizard = "Add wizard";
     team = "Team:";

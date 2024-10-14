@@ -6,7 +6,7 @@ export function ScaleAndCenterToContainer(source: Container, dest: HTMLCanvasEle
 }
 
 export function ScaleToContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number) {
-    source.scale.set(GetScaleToContainer(source, dest, factor));
+    source.scale.set(Math.min(source.scale.x, source.scale.y) * GetScaleToContainer(source, dest, factor));
 }
 
 export function CenterPosition(source: Container, dest: HTMLCanvasElement | Container) {

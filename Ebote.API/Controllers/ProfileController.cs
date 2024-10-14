@@ -21,7 +21,7 @@ namespace Ebote.API.Controllers
             var profile = await profileRepository.GetByIdAsync(profileId);
 
             if (profile.ActiveLobby is not null
-                && gameStorage.Lobbies.ContainsKey(profile.ActiveLobby.Id))
+                && !gameStorage.Lobbies.ContainsKey(profile.ActiveLobby.Id))
                 await profileRepository.ClearActiveLobbyAsync(profileId);
 
             return Ok(profile);
