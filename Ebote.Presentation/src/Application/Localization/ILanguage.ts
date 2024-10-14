@@ -1,4 +1,6 @@
 export interface ILanguage {
+    startGame: string;
+    addWizard: string;
     createLobby: string;
     selectTeam: string;
     gameName: string;

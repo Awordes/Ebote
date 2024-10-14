@@ -15,6 +15,8 @@ export class LobbyForm extends Container {
     public description: HTMLText;
     public sideType: RadioGroup;
     public wizardName: InputField;
+    public startGameButton: FancyButton;
+    public addWizardButton: FancyButton;
 
     public static async Create(): Promise<LobbyForm> {
         let lobbyForm = new LobbyForm();
@@ -53,7 +55,7 @@ export class LobbyForm extends Container {
         lobbyForm.magicType.onChange.connect((id: number) => {lobbyForm.ShowDescription(id)});        
 
         let border = new Graphics();
-        border.rect(0, 0, 200, 120);
+        border.rect(0, 0, 200, lobbyForm.magicType.height);
         border.fill(0x000000);
         
         lobbyForm.description = new HTMLText({
@@ -72,11 +74,27 @@ export class LobbyForm extends Container {
         );
 
         ScaleToContainer(lobbyForm.description, border);
-        
+
+        lobbyForm.addWizardButton = await CreateButton(TextService.GetStringValue('addWizard'));
+
+        lobbyForm.addWizardButton.position.set(
+            0,
+            lobbyForm.magicType.y + lobbyForm.magicType.height + 1
+        );
+
+        lobbyForm.startGameButton = await CreateButton(TextService.GetStringValue('startGame'));
+
+        lobbyForm.startGameButton.position.set(
+            lobbyForm.addWizardButton.x + lobbyForm.addWizardButton.width + 1,
+            lobbyForm.addWizardButton.y
+        );
+
         lobbyForm.addChild(lobbyForm.description);
         lobbyForm.addChild(lobbyForm.backButton);
         lobbyForm.addChild(lobbyForm.magicType);
-        lobbyForm.addChild(lobbyForm.sideType)
+        lobbyForm.addChild(lobbyForm.sideType);
+        lobbyForm.addChild(lobbyForm.addWizardButton);
+        lobbyForm.addChild(lobbyForm.startGameButton);
         lobbyForm.addChild(sideDescription);
         lobbyForm.addChild(lobbyForm.wizardName);
 
