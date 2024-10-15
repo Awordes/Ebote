@@ -32,4 +32,6 @@ export class AssetStore {
     public static readonly smallButtonDeafult: UnresolvedAsset = { alias: 'smallButtonDeafult', src: 'assets/svg/small-button-default.svg', data: { parseAsGraphicsContext: true, }, };
 
     public static readonly smallButtonPressed: UnresolvedAsset = { alias: 'smallButtonPressed', src: 'assets/svg/small-button-pressed.svg', data: { parseAsGraphicsContext: true, }, };
+
+    public static readonly modalBackground: UnresolvedAsset = { alias: 'modalBackground', src: 'assets/svg/modal-background.svg', data: { parseAsGraphicsContext: true, }, };
 }

@@ -21,8 +21,8 @@
     "esbuild-plugin-tsc": "0.4.0"
   },
   "dependencies": {
-    "@hey-api/client-fetch": "^0.4.0",
-    "@microsoft/signalr": "^8.0.7",
+    "@hey-api/client-fetch": "0.4.0",
+    "@microsoft/signalr": "8.0.7",
     "@pixi/ui": "2.1.5",
     "pixi.js": "8.4.1"
   }

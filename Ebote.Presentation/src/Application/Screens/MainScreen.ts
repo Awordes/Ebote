@@ -87,16 +87,29 @@ async function InitLobbyForm(mainScreen:MainScreen) {
     mainScreen.lobbyForm.backButton.on('pointerup', async () => { mainScreen.ShowScreen('menu'); });
 
     mainScreen.lobbyForm.addWizardButton.on('pointerup', async () => {
-        if (mainScreen.lobbyForm.sideType.selected == 2)
-            throw new Error("Choose side");
+        if (mainScreen.lobbyForm.sideType.selected == 2) {
+            ScreenLoader.ShowModal('Выберите сторону');
+            return;
+        }
 
-        await postProfileAddWizard({
+        if (mainScreen.lobbyForm.wizardName.fieldValue?.length < 1) {
+            ScreenLoader.ShowModal('Введите имя мага');
+            return;
+        }
+
+        let response = await postProfileAddWizard({
             body: {
                 name: mainScreen.lobbyForm.wizardName.fieldValue,
                 magicType: mainScreen.lobbyForm.magicType.selected as MagicType,
                 sideType: mainScreen.lobbyForm.sideType.selected as SideType
             }
         });
+
+        if (response.response.ok) {
+            mainScreen.lobbyForm.startGameButton.enabled = true;
+        } else {
+            ScreenLoader.ShowModal('Не удалось \r\nдобавить мага.');
+        }
     });
 
     mainScreen.wizardHub = new WizardHub();
@@ -168,12 +181,16 @@ class MainScreen extends Container {
     }
 
     public async Login() {
-        await postAccountLogin({
+        let response = await postAccountLogin({
             body: {
                 login: this.loginForm.loginInput.fieldValue,
                 passwordHash: this.loginForm.passwordInput.fieldValue
             }
         });
+
+        if (!response.response.ok) {
+            ScreenLoader.ShowModal('Не удалось \r\nавторизоваться');
+        }
     }
 
     public async Logout() {
