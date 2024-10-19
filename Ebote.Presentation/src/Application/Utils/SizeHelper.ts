@@ -13,9 +13,17 @@ export function CenterPosition(source: Container, dest: HTMLCanvasElement | Cont
     source.position.set((dest.width - source.width) / 2, (dest.height - source.height) / 2);
 }
 
-export function GetScaleToContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number): number {
+export function GetScaleToContainer(source: Container, dest: HTMLCanvasElement | Container, factor?: number, scaleType?: 'X' | 'Y'): number {
     let scaleX = dest.width / source.width;
     let scaleY = dest.height / source.height;
 
-    return Math.min(scaleX, scaleY) * (factor ? factor : 1);
+    let scale: number;
+    if (scaleType == "X")
+        scale = scaleX;
+    else if (scaleType == "Y")
+        scale = scaleY;
+    else
+        scale = Math.min(scaleX, scaleY);
+
+    return scale * (factor ? factor : 1);
 }

@@ -21,9 +21,15 @@ export class LobbyForm extends Container {
     public addWizardButton: FancyButton;
     private teamList: TeamList;
     private teamListBorder: Graphics;
+    public lobbyUrl: FancyButton;
+    public id: string;
+    public sharedLink: string;
 
-    public static async Create(): Promise<LobbyForm> {
+    public static async Create(lobbyId?: string): Promise<LobbyForm> {
         let lobbyForm = new LobbyForm();
+        lobbyForm.id = lobbyId;
+        lobbyForm.sharedLink = window.location.hostname;
+        console.log(lobbyForm.sharedLink);
 
         lobbyForm.backButton = await CreateButton(TextService.GetStringValue('back'));
 
@@ -87,11 +93,31 @@ export class LobbyForm extends Container {
         );
 
         lobbyForm.startGameButton = await CreateButton(TextService.GetStringValue('startGame'));
+        lobbyForm.startGameButton.enabled = false;
 
         lobbyForm.startGameButton.position.set(
             lobbyForm.addWizardButton.x + lobbyForm.addWizardButton.width + 1,
             lobbyForm.addWizardButton.y
         );
+
+        let lobbyUrlDescription = new HTMLText({
+            text: TextService.GetStringValue('lobbyUrl'),
+            style: {
+                fontFamily: AssetStore.MonocraftFont.alias,
+                fontSize: 100,
+                wordWrap: true,
+                wordWrapWidth: 2700
+            }
+        });
+        lobbyUrlDescription.position.set(
+            lobbyForm.startGameButton.x + lobbyForm.startGameButton.width + 5,
+            lobbyForm.startGameButton.y
+        );
+
+        let lobbyUrlDescBorder = new Graphics();
+        lobbyUrlDescBorder.rect(0, 0, 80, lobbyForm.startGameButton.height + 5);
+        lobbyUrlDescBorder.fill(0x000000);
+        ScaleToContainer(lobbyUrlDescription, lobbyUrlDescBorder);
 
         lobbyForm.teamListBorder = new Graphics();
         lobbyForm.teamListBorder.rect(0, 0, 80, lobbyForm.description.height);
@@ -121,6 +147,7 @@ export class LobbyForm extends Container {
         lobbyForm.addChild(lobbyForm.startGameButton);
         lobbyForm.addChild(sideDescription);
         lobbyForm.addChild(lobbyForm.teamList);
+        lobbyForm.addChild(lobbyUrlDescription);
         lobbyForm.addChild(lobbyForm.wizardName);
 
         lobbyForm.updateWizardList([]);

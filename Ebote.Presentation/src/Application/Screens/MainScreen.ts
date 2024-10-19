@@ -1,7 +1,7 @@
 import { Assets, Container, Graphics } from "pixi.js";
 import { AssetStore } from "../Utils/AssetStore";
 import { ScreenLoader } from "./ScreenLoader";
-import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
+import { GetScaleToContainer, ScaleAndCenterToContainer } from "../Utils/SizeHelper";
 import { MenuForm } from "../Components/MenuForm";
 import { LobbyForm } from "../Components/LobbyForm";
 import { LoginForm } from "../Components/LoginForm";
@@ -18,7 +18,13 @@ export async function InitMainScreen () {
 
     mainScreen.scroll = new Graphics(await Assets.load(AssetStore.scroll));
     mainScreen.addChild(mainScreen.scroll);
-    mainScreen.scroll.position.set(0, mainScreen.gameName.height + 1);
+
+    mainScreen.scroll.scale.set(GetScaleToContainer(mainScreen.scroll, mainScreen.gameName, 1.5, "X"));
+    mainScreen.gameName.x = (mainScreen.scroll.width - mainScreen.gameName.width) / 2;
+    mainScreen.scroll.position.set(
+        0,
+        mainScreen.gameName.height + 15
+    );
 
     await InitContentBox(mainScreen);
     await InitLoginForm(mainScreen);
@@ -29,23 +35,20 @@ export async function InitMainScreen () {
     mainScreen.content.addChild(mainScreen.menuForm);
     mainScreen.content.addChild(mainScreen.lobbyForm);
 
-    ScaleAndCenterToContainer(mainScreen, ScreenLoader.app.canvas, 0.9);
-    ScreenLoader.app.stage.addChild(mainScreen);
-
-    mainScreen.ShowScreen('menu');
+    return mainScreen;
 }
 
-async function InitContentBox(mainScreen:MainScreen) {
+async function InitContentBox(mainScreen: MainScreen) {
     mainScreen.content = new Container();
     mainScreen.addChild(mainScreen.content);
     mainScreen.content.position.set(
-        mainScreen.scroll.x + 29,
-        mainScreen.scroll.y + 10
+        mainScreen.scroll.x + 72,
+        mainScreen.scroll.y + 30
     );
 
     let border = new Graphics();
     mainScreen.content.addChild(border);
-    border.rect(0, 0, mainScreen.scroll.width - 34, mainScreen.scroll.height - 25);
+    border.rect(0, 0, mainScreen.scroll.width - 85, mainScreen.scroll.height - 65);
     border.stroke({width: 1, color:0x000000});
     border.alpha = 0;
 }
@@ -69,7 +72,12 @@ async function InitMenuForm(mainScreen: MainScreen) {
     ScaleAndCenterToContainer(mainScreen.menuForm, mainScreen.content, 0.7);
 
     mainScreen.menuForm.createLobbyButton.on('pointerup', async ()  => {
-        await postLobby();
+        let response = await postLobby();
+
+        if (response.response.ok) {
+            mainScreen.lobbyForm.id = response.data.id
+        }
+
         await mainScreen.ShowScreen('lobby');
     });
 
@@ -159,22 +167,26 @@ class MainScreen extends Container {
 
     private async ShowMenuForm() {
         this.menuForm.visible = true;
-        let profile = await getProfile();
+        let response = await getProfile();
 
-        if (profile.response.ok && profile.data.activeLobby)
+        if (response.response.ok && response.data.activeLobby) {
+            this.lobbyForm.id = response.data.activeLobby.id;
             this.menuForm.openLobbyButton.visible = true;
+        }
         else
             this.menuForm.openLobbyButton.visible = false;
     }
 
     private async ShowLobbyForm() {
         this.lobbyForm.visible = true;
+        window.location.hash = '#lobby/' + this.lobbyForm.id;
         await this.wizardHub.connection.start();
         await this.wizardHub.connection.send(this.wizardHub.getWizardActiveLobbyAsync);
     }
 
     private async HideLobbyForm() {
         this.lobbyForm.visible = false;
+        window.location.hash = '';
         await this.wizardHub.connection.stop();
     }
 
