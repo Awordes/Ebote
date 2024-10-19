@@ -12,19 +12,20 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public DateTime? StartTime { get; private set; }
 
+    public DateTime CreateTime { get; init; } = DateTime.Now;
+
+    public DateTime LobbyEndTime { get; init; } = DateTime.Now.AddSeconds(GameConstants.GameLifeTimeInSeconds);
+
     public Dictionary<Guid, Wizard> Wizards { get; init; } = [];
 
     public ICollection<WizardToAdd> WizardsToAdd { get; init; } = [];
-
-    public DateTime CreateTime { get; init; } = DateTime.Now;
-
-    private readonly DateTime LobbyEndTime = DateTime.Now.AddSeconds(GameConstants.GameLifeTimeInSeconds);
 
     public void AddWizard(Guid profileId, MagicType magicType, SideType sideType, string name)
     {
         if (IsGameStarted) throw new Exception("Game already started.");
 
-        if (WizardsToAdd.Any(x => x.ProfileId == profileId)) throw new Exception("Profile already added.");
+        if (WizardsToAdd.Any(x => x.ProfileId == profileId))
+            throw new Exception("Profile already added.");
 
         WizardsToAdd.Add(new WizardToAdd(profileId, magicType, sideType, name));
     }

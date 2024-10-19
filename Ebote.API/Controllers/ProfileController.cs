@@ -47,7 +47,6 @@ namespace Ebote.API.Controllers
         [HttpGet("[action]")]
         public async Task<ActionResult<GameLobby>> GetActiveLobbyState()
         {
-            
             var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
             var profile = await profileRepository.GetByIdAsync(profileId);
@@ -58,6 +57,16 @@ namespace Ebote.API.Controllers
                 throw new Exception("Game lobby not found.");
             
             return Ok(gameLobby);
+        }
+
+        [HttpPost("[action]/{lobbyId}")]
+        public async Task<IActionResult> UpdateActiveLobby(Guid lobbyId)
+        {
+            var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+            await profileRepository.UpdateActiveLobbyAsync(profileId, lobbyId);
+
+            return Ok();
         }
     }
 }
