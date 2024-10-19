@@ -5,7 +5,7 @@ import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
 import { MenuForm } from "../Components/MenuForm";
 import { LobbyForm } from "../Components/LobbyForm";
 import { LoginForm } from "../Components/LoginForm";
-import { GameLobby, getAccountCheckAuth, getProfile, MagicType, postAccountLogin, postAccountLogout, postLobby, postProfileAddWizard, SideType, WizardToAdd } from "../../client";
+import { GameLobby, getAccountCheckAuth, getProfile, MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType, WizardToAdd } from "../../client";
 import { WizardHub } from "../SignalR/WizardHub";
 
 export async function InitMainScreen () {
@@ -57,6 +57,10 @@ async function InitLoginForm(mainScreen:MainScreen) {
     mainScreen.loginForm.loginButton.on('pointerup', async () => {
         await mainScreen.Login();
         await mainScreen.ShowScreen('menu');
+    });
+
+    mainScreen.loginForm.signupButton.on('pointerup', async () => {
+        await mainScreen.SignUp();
     });
 }
 
@@ -190,6 +194,21 @@ class MainScreen extends Container {
 
         if (!response.response.ok) {
             ScreenLoader.ShowModal('Не удалось \r\nавторизоваться');
+        }
+    }
+
+    public async SignUp() {
+        let response  = await postAccountSignUp({
+            body: {
+                login: this.loginForm.loginInput.fieldValue,
+                passwordHash: this.loginForm.passwordInput.fieldValue
+            }
+        });
+
+        if (response.response.ok) {
+            ScreenLoader.ShowModal('Аккаунт успешно зарегистрирован! \r\n Войдите по логину и паролю.');
+        } else {
+            ScreenLoader.ShowModal('Ошибка при регистрации');
         }
     }
 
