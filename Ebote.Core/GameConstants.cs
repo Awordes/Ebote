@@ -25,4 +25,6 @@ public static class GameConstants
     public const float StartXMargin = 15;
 
     public const float StartYMargin = 15;
+
+    public const int GameLifeTimeInSeconds = 3600;
 }

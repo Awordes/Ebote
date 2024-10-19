@@ -34,5 +34,11 @@ namespace Ebote.API.Controllers
 
             return Ok(lobbies);
         }
+
+        [HttpGet("Active")]
+        public ActionResult<DateTime[]> GetActiveLobbyStartTimeList()
+        {
+            return Ok(gameStorage.Lobbies.Values.Select(x => x.CreateTime).ToArray());
+        }
     }
 }

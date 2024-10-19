@@ -10,11 +10,15 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public float GameTimeInSeconds { get; private set; }
 
-    public DateTime? StartTime { get; set; }
+    public DateTime? StartTime { get; private set; }
 
     public Dictionary<Guid, Wizard> Wizards { get; init; } = [];
 
     public ICollection<WizardToAdd> WizardsToAdd { get; init; } = [];
+
+    public DateTime CreateTime { get; init; } = DateTime.Now;
+
+    private readonly DateTime LobbyEndTime = DateTime.Now.AddSeconds(GameConstants.GameLifeTimeInSeconds);
 
     public void AddWizard(Guid profileId, MagicType magicType, SideType sideType, string name)
     {
@@ -68,6 +72,12 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public override Task Update()
     {
+        if (LobbyEndTime < DateTime.Now)
+        {
+            Stop();
+            return Task.CompletedTask;
+        }
+
         foreach (var wizard in Wizards)
         {
             // todo
