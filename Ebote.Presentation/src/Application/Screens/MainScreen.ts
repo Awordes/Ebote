@@ -35,6 +35,8 @@ export async function InitMainScreen () {
     mainScreen.content.addChild(mainScreen.menuForm);
     mainScreen.content.addChild(mainScreen.lobbyForm);
 
+    mainScreen.ShowScreen('menu');
+
     return mainScreen;
 }
 

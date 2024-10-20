@@ -21,15 +21,11 @@ export class LobbyForm extends Container {
     public addWizardButton: FancyButton;
     private teamList: TeamList;
     private teamListBorder: Graphics;
-    public lobbyUrl: FancyButton;
     public id: string;
-    public sharedLink: string;
 
     public static async Create(lobbyId?: string): Promise<LobbyForm> {
         let lobbyForm = new LobbyForm();
         lobbyForm.id = lobbyId;
-        lobbyForm.sharedLink = window.location.hostname;
-        console.log(lobbyForm.sharedLink);
 
         lobbyForm.backButton = await CreateButton(TextService.GetStringValue('back'));
 
@@ -115,7 +111,7 @@ export class LobbyForm extends Container {
         );
 
         let lobbyUrlDescBorder = new Graphics();
-        lobbyUrlDescBorder.rect(0, 0, 80, lobbyForm.startGameButton.height + 5);
+        lobbyUrlDescBorder.rect(0, 0, 160, lobbyForm.startGameButton.height + 5);
         lobbyUrlDescBorder.fill(0x000000);
         ScaleToContainer(lobbyUrlDescription, lobbyUrlDescBorder);
 

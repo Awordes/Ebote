@@ -37,6 +37,8 @@ export class TeamList extends HTMLText {
             resultString = resultString + '<b style="color: #088F8F;">' + this.getWizardString(this.greenTeam[key]) + '</b><br>';
         }
 
+        resultString = resultString + '<br><br>';
+
         for (let key in this.redTeam) {
             resultString = resultString + '<b style="color: #EE4B2B;">' + this.getWizardString(this.redTeam[key]) + '</b><br>';
         }

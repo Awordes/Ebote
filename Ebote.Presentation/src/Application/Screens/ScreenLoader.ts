@@ -15,7 +15,6 @@ export class ScreenLoader {
         let mainScreen = await InitMainScreen();
         ScaleAndCenterToContainer(mainScreen, ScreenLoader.app.canvas, 0.9);
         ScreenLoader.app.stage.addChild(mainScreen);
-        mainScreen.ShowScreen('menu');
     }
 
     private static async InitPixiCanvas() {

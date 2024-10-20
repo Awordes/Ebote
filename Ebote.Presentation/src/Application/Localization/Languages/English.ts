@@ -2,7 +2,7 @@ import { ILanguage } from "../ILanguage";
 
 export class English implements ILanguage {
     lobbyUrl = "Copy the link and send it to your friends!";
-    wizardsInLobbyy = "Wizards in lobby:";
+    wizardsInLobbyy = "Teams:";
     startGame = "Start game";
     addWizard = "Add wizard";
     team = "Team:";
