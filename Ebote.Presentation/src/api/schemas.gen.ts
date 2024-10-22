@@ -58,7 +58,16 @@ export const GameLobbySchema = {
         startTime: {
             type: 'string',
             format: 'date-time',
-            nullable: true
+            nullable: true,
+            readOnly: true
+        },
+        createTime: {
+            type: 'string',
+            format: 'date-time'
+        },
+        lobbyEndTime: {
+            type: 'string',
+            format: 'date-time'
         },
         wizards: {
             type: 'object',

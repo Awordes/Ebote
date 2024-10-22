@@ -16,7 +16,9 @@ export type GameLobby = {
     id?: string;
     creatorId?: string;
     readonly gameTimeInSeconds?: number;
-    startTime?: (string) | null;
+    readonly startTime?: (string) | null;
+    createTime?: string;
+    lobbyEndTime?: string;
     wizards?: {
         [key: string]: Wizard;
     } | null;
@@ -115,6 +117,10 @@ export type GetLobbyListResponse = (Array<Lobby>);
 
 export type GetLobbyListError = unknown;
 
+export type GetLobbyActiveResponse = (Array<(string)>);
+
+export type GetLobbyActiveError = unknown;
+
 export type GetProfileResponse = (Profile);
 
 export type GetProfileError = unknown;
@@ -130,3 +136,13 @@ export type PostProfileAddWizardError = unknown;
 export type GetProfileGetActiveLobbyStateResponse = (GameLobby);
 
 export type GetProfileGetActiveLobbyStateError = unknown;
+
+export type PostProfileUpdateActiveLobbyByLobbyIdData = {
+    path: {
+        lobbyId: string;
+    };
+};
+
+export type PostProfileUpdateActiveLobbyByLobbyIdResponse = (unknown);
+
+export type PostProfileUpdateActiveLobbyByLobbyIdError = unknown;

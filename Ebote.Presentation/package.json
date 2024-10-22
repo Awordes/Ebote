@@ -7,7 +7,7 @@
     "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../Ebote.API/wwwroot/index.js --format=esm",
     "copyhtml": "copyfiles -u 1 src/**/*.html ../Ebote.API/wwwroot/",
     "copyassets": "copyfiles -u 1 src/assets/**/* ../Ebote.API/wwwroot/",
-    "openapi-ts": "openapi-ts"
+    "api": "openapi-ts"
   },
   "keywords": [],
   "author": "",
