@@ -1,12 +1,33 @@
 import { Application, Assets } from "pixi.js";
-import { AssetStore } from "../utils/assetStore";
+import { Route } from "../Utils/Router";
+import { ModalStore } from "./Components/ModalStore";
+import { MainScreen } from "./Components/MainScreen";
+import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
+import { AssetStore } from "../Utils/AssetStore";
 
 export class ScreenLoader {
     public static app: Application;
+    public static modalStore: ModalStore;
+    public static mainScreen: MainScreen;
 
     public static async Init() {
-        this.app = await InitApplication();        
+        this.app = await InitApplication();
         document.body.appendChild(this.app.canvas);
+
+        this.modalStore = await ModalStore.Create();
+        this.modalStore.scale.set(3);
+
+        this.mainScreen = await MainScreen.Create();
+        ScaleAndCenterToContainer(this.mainScreen, this.app.canvas, 0.9);
+
+        this.app.stage.addChild(this.mainScreen);
+        this.app.stage.addChild(this.modalStore);
+
+        await Route('menu');
+    }
+
+    public static async ShowModal(text: string) {
+        await this.modalStore.ShowModal(text);
     }
 }
 
