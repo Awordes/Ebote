@@ -1,4 +1,4 @@
-import { getAccountCheckAuth } from "../api";
+import { getAccountCheckAuth, getProfile } from "../api";
 import { ScreenLoader } from "../UI/ScreenLoader";
 
 export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
@@ -25,9 +25,18 @@ export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
 }
 
 async function ShowMenuForm(): Promise<void> {
-    ScreenLoader.mainScreen.Show('menu');
+    let profile = await getProfile();
+
+    if (!profile.response.ok) {
+        await ScreenLoader.ShowModal('Ошибка при<br>получении профиля');
+        return;
+    }
+
+    ScreenLoader.mainScreen.menuForm.openLobbyButton.visible = profile.data.activeLobby?.id ? true : false;
+
+    await ScreenLoader.mainScreen.Show('menu');
 }
 
 async function ShowLoginForm(): Promise<void> {
-    ScreenLoader.mainScreen.Show('login');
+    await ScreenLoader.mainScreen.Show('login');
 }

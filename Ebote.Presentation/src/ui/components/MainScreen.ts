@@ -35,6 +35,8 @@ export class MainScreen extends Container {
         mainScreen.addChild(mainScreen.gameName);
         mainScreen.addChild(mainScreen.scroll);
 
+        mainScreen.Show('login');
+
         return mainScreen;
     }
 
