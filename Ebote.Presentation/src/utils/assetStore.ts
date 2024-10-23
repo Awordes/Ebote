@@ -46,7 +46,7 @@ export class AssetStore {
     };
 
     public static readonly monocraftFont: UnresolvedAsset = {
-        alias: 'monocraftFont',
+        alias: 'Monocraft',
         src: 'public/fonts/Monocraft.otf' };
 
     public static readonly rectButtonDeafult: UnresolvedAsset = {
