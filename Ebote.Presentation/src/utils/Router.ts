@@ -1,4 +1,4 @@
-import { getAccountCheckAuth, getProfile, postProfileUpdateActiveLobbyByLobbyId } from "../api";
+import { getAccountCheckAuth, getProfile, postProfileUpdateActiveLobbyByLobbyId } from "../API";
 import { WizardHub } from "../SignalR/WizardHub";
 import { ScreenLoader } from "../UI/ScreenLoader";
 

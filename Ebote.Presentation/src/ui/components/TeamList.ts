@@ -1,5 +1,5 @@
 import { HTMLText, HTMLTextOptions } from "pixi.js";
-import { MagicType, WizardToAdd } from "../../api";
+import { MagicType, WizardToAdd } from "../../API";
 import { TextService } from "../../Localization/TextService";
 
 export class TeamList extends HTMLText {

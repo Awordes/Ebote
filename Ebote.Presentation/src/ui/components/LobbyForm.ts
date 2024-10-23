@@ -8,8 +8,8 @@ import { AssetStore } from "../../Utils/AssetStore";
 import { ScaleToContainer } from "../../Utils/SizeHelper";
 import { CreateSideTypeSelector } from "./SideTypeSelector";
 import { CreateWizardTypeSelector } from "./WizardTypeSelector";
+import { WizardToAdd } from "../../API";
 import { WizardDescriptions } from "../../Utils/WizardDescriptions";
-import { WizardToAdd } from "../../api";
 
 export class LobbyForm extends Container {
     public backButton: FancyButton;

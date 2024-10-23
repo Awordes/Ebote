@@ -2,7 +2,7 @@ import { Assets, Container, Graphics } from "pixi.js";
 import { AssetStore } from "../../Utils/AssetStore";
 import { GetScaleToContainer, ScaleAndCenterToContainer } from "../../Utils/SizeHelper";
 import { LoginForm } from "./LoginForm";
-import { GameLobby, MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType } from "../../api";
+import { GameLobby, MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType } from "../../API";
 import { ScreenLoader } from "../ScreenLoader";
 import { MenuForm } from "./MenuForm";
 import { Route } from "../../Utils/Router";
