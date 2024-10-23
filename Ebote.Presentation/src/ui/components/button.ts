@@ -1,6 +1,6 @@
 import { FancyButton } from "@pixi/ui";
 import { Assets, Graphics, HTMLText } from "pixi.js";
-import { AssetStore } from "../../utils/assetStore";
+import { AssetStore } from "../../Utils/AssetStore";
 
 export async function CreateButton (text?: string): Promise<FancyButton> {
     let button = new FancyButton({
