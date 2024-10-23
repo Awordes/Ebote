@@ -1,4 +1,5 @@
-import { getAccountCheckAuth, getProfile } from "../api";
+import { getAccountCheckAuth, getProfile, postProfileUpdateActiveLobbyByLobbyId } from "../api";
+import { WizardHub } from "../SignalR/WizardHub";
 import { ScreenLoader } from "../UI/ScreenLoader";
 
 export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
@@ -11,6 +12,22 @@ export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
         return;
     }
 
+    if (currentRoute.startsWith('#/lobby/')) {
+        let lobbyId = currentRoute.substring(8, currentRoute.length);
+
+        let response = await postProfileUpdateActiveLobbyByLobbyId({
+            path: {
+                lobbyId: lobbyId
+            }
+        });
+
+        if (response.response.ok) {
+            ScreenLoader.ShowModal('Обновлено активное<br>лобби.');
+        } else {
+            ScreenLoader.ShowModal('Ошибка при<br>открытии лобби.');
+        }
+    }
+
     switch (route)
     {
         case "login":
@@ -20,11 +37,13 @@ export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
             await ShowMenuForm();
             break;
         case "lobby":
+            await ShowLobbyForm();
             break;
     }
 }
 
 async function ShowMenuForm(): Promise<void> {
+    ScreenLoader.mainScreen.HideContent();
     let profile = await getProfile();
 
     if (!profile.response.ok) {
@@ -32,11 +51,27 @@ async function ShowMenuForm(): Promise<void> {
         return;
     }
 
-    ScreenLoader.mainScreen.menuForm.openLobbyButton.visible = profile.data.activeLobby?.id ? true : false;
+    if (profile.data.activeLobby?.id) {
+        ScreenLoader.mainScreen.menuForm.openLobbyButton.visible = true;
+        ScreenLoader.mainScreen.lobbyForm.id = profile.data.activeLobby.id;
+    } else {
+        ScreenLoader.mainScreen.menuForm.openLobbyButton.visible = false;
+    }
 
-    await ScreenLoader.mainScreen.Show('menu');
+    ScreenLoader.mainScreen.menuForm.visible = true;
+    window.location.hash = '/menu';
 }
 
 async function ShowLoginForm(): Promise<void> {
-    await ScreenLoader.mainScreen.Show('login');
+    ScreenLoader.mainScreen.HideContent();
+    ScreenLoader.mainScreen.loginForm.visible = true;
+    window.location.hash = '/login';
+}
+
+async function ShowLobbyForm(): Promise<void> {
+    ScreenLoader.mainScreen.HideContent();
+    ScreenLoader.mainScreen.lobbyForm.visible = true;
+    await ScreenLoader.mainScreen.wizardHub.connection.start();
+    await ScreenLoader.mainScreen.wizardHub.connection.send(WizardHub.getWizardActiveLobbyAsync);
+    window.location.hash = '/lobby/' + ScreenLoader.mainScreen.lobbyForm.id;
 }

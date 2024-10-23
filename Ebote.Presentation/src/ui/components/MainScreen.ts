@@ -2,10 +2,12 @@ import { Assets, Container, Graphics } from "pixi.js";
 import { AssetStore } from "../../Utils/AssetStore";
 import { GetScaleToContainer, ScaleAndCenterToContainer } from "../../Utils/SizeHelper";
 import { LoginForm } from "./LoginForm";
-import { postAccountLogin, postAccountLogout, postAccountSignUp, postLobby } from "../../api";
+import { GameLobby, MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType } from "../../api";
 import { ScreenLoader } from "../ScreenLoader";
 import { MenuForm } from "./MenuForm";
 import { Route } from "../../Utils/Router";
+import { LobbyForm } from "./LobbyForm";
+import { WizardHub } from "../../SignalR/WizardHub";
 
 export class MainScreen extends Container {
     private gameName: Graphics;
@@ -13,6 +15,8 @@ export class MainScreen extends Container {
     private content: Container;
     public loginForm: LoginForm;
     public menuForm: MenuForm;
+    public lobbyForm: LobbyForm;
+    public wizardHub: WizardHub;
 
     public static async Create(): Promise<MainScreen> {
         let mainScreen = new MainScreen();
@@ -31,11 +35,12 @@ export class MainScreen extends Container {
 
         await mainScreen.CreateLoginForm();
         await mainScreen.CreateMenuForm();
+        await mainScreen.CreateLobbyForm();
 
         mainScreen.addChild(mainScreen.gameName);
         mainScreen.addChild(mainScreen.scroll);
 
-        mainScreen.Show('login');
+        mainScreen.HideContent();
 
         return mainScreen;
     }
@@ -107,8 +112,9 @@ export class MainScreen extends Container {
         this.menuForm.createLobbyButton.on('pointerup', async ()  => {
             let response = await postLobby();
 
-            if (response.response.ok) {
-                // this.lobbyForm.id = response.data.id
+            if (!response.response.ok) {
+                ScreenLoader.ShowModal('Не удалось<br>создать лобби.');
+                return;
             }
 
             await Route('lobby');
@@ -126,20 +132,52 @@ export class MainScreen extends Container {
         this.content.addChild(this.menuForm);
     }
 
-    public async Show(form: 'login' | 'menu' | 'lobby'): Promise<void> {
+    public async CreateLobbyForm(): Promise<void> {
+        this.lobbyForm = await LobbyForm.Create();
+        ScaleAndCenterToContainer(this.lobbyForm, this.content);
+
+        this.wizardHub = new WizardHub();
+        this.wizardHub.connection.on(WizardHub.getWizardActiveLobbyAsync, (gamestate: GameLobby) =>{
+            this.lobbyForm.updateWizardList(gamestate.wizardsToAdd);
+        });
+
+        this.lobbyForm.backButton.on('pointerup', async () => {
+            await this.wizardHub.connection.stop();
+            Route('menu');
+        });
+
+        this.lobbyForm.addWizardButton.on('pointerup', async () => {
+            if (this.lobbyForm.sideType.selected == 2) {
+                ScreenLoader.ShowModal('Выберите сторону');
+                return;
+            }
+
+            if (this.lobbyForm.wizardName.fieldValue?.length < 1) {
+                ScreenLoader.ShowModal('Введите имя мага');
+                return;
+            }
+
+            let response = await postProfileAddWizard({
+                body: {
+                    name: this.lobbyForm.wizardName.fieldValue,
+                    magicType: this.lobbyForm.magicType.selected as MagicType,
+                    sideType: this.lobbyForm.sideType.selected as SideType
+                }
+            });
+            
+            if (response.response.ok) {
+                this.lobbyForm.startGameButton.enabled = true;
+            } else {
+                ScreenLoader.ShowModal('Не удалось<br>добавить мага.');
+            }
+        });
+
+        this.content.addChild(this.lobbyForm);
+    }
+
+    public HideContent() {
+        this.lobbyForm.visible = false;
         this.loginForm.visible = false;
         this.menuForm.visible = false;
-        
-        switch (form)
-        {
-            case "login":
-                this.loginForm.visible = true;
-                break;
-            case "menu":
-                this.menuForm.visible = true;
-                break;
-            case "lobby":
-                break;
-        }
     }
 }
