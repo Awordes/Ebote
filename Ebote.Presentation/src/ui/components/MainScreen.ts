@@ -110,12 +110,14 @@ export class MainScreen extends Container {
         ScaleAndCenterToContainer(this.menuForm, this.content, 0.7);
 
         this.menuForm.createLobbyButton.on('pointerup', async ()  => {
-            let response = await postLobby();
+            let lobby = await postLobby();
 
-            if (!response.response.ok) {
+            if (!(lobby).response.ok) {
                 ScreenLoader.ShowModal('Не удалось<br>создать лобби.');
                 return;
             }
+
+            this.lobbyForm.id = lobby.data.id;
 
             await Route('lobby');
         });

@@ -1,5 +1,5 @@
 import { Application, Assets } from "pixi.js";
-import { Route } from "../Utils/Router";
+import { InitRoute, Route } from "../Utils/Router";
 import { ModalStore } from "./Components/ModalStore";
 import { MainScreen } from "./Components/MainScreen";
 import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
@@ -23,7 +23,7 @@ export class ScreenLoader {
         this.app.stage.addChild(this.mainScreen);
         this.app.stage.addChild(this.modalStore);
 
-        await Route('menu');
+        await InitRoute();
     }
 
     public static async ShowModal(text: string) {
