@@ -1,5 +1,5 @@
-import { ScreenLoader } from "./UI/ScreenLoader";
+import { InitRoute } from "./Router/Router";
 
 (async () => {
-    await ScreenLoader.Init();
+    await InitRoute();
 })();

@@ -1,8 +1,8 @@
 import { Container } from "pixi.js";
-import { InputField } from "./InputField";
+import { InputField } from "../Components/InputField";
 import { FancyButton } from "@pixi/ui";
 import { TextService } from "../../Localization/TextService";
-import { CreateButton } from "./Button";
+import { CreateButton } from "../Components/Button";
 
 export class LoginForm extends Container {
     public loginInput: InputField;

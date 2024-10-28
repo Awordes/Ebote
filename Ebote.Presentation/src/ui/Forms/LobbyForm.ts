@@ -1,15 +1,15 @@
 import { FancyButton, RadioGroup } from "@pixi/ui";
 import { Container, Graphics, HTMLText } from "pixi.js";
-import { InputField } from "./InputField";
-import { TeamList } from "./TeamList";
-import { CreateButton } from "./Button";
 import { TextService } from "../../Localization/TextService";
 import { AssetStore } from "../../Utils/AssetStore";
 import { ScaleToContainer } from "../../Utils/SizeHelper";
-import { CreateSideTypeSelector } from "./SideTypeSelector";
-import { CreateWizardTypeSelector } from "./WizardTypeSelector";
 import { WizardToAdd } from "../../API";
 import { WizardDescriptions } from "../../Utils/WizardDescriptions";
+import { InputField } from "../Components/InputField";
+import { TeamList } from "../Components/TeamList";
+import { CreateButton } from "../Components/Button";
+import { CreateSideTypeSelector } from "../Components/SideTypeSelector";
+import { CreateWizardTypeSelector } from "../Components/WizardTypeSelector";
 
 export class LobbyForm extends Container {
     public backButton: FancyButton;

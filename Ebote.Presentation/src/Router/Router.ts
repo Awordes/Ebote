@@ -1,8 +1,10 @@
-import { getAccountCheckAuth, getProfile, getProfileGetActiveLobbyState, postProfileUpdateActiveLobbyByLobbyId } from "../API";
-import { WizardHub } from "../SignalR/WizardHub";
+import { getAccountCheckAuth, getProfile, postProfileUpdateActiveLobbyByLobbyId } from "../API";
 import { ScreenLoader } from "../UI/ScreenLoader";
+import { RouteLobby } from "./Routes/LobbyRouter";
 
-export async function InitRoute(): Promise<void> {
+export async function InitRoute() {
+    await ScreenLoader.Init();
+
     const currentRoute = window.location.hash;
 
     const checkAuth = await getAccountCheckAuth();
@@ -35,7 +37,7 @@ export async function InitRoute(): Promise<void> {
     }
 }
 
-export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
+export async function Route(route: 'login' | 'menu' | 'lobby' | 'game'): Promise<void> {
     const checkAuth = await getAccountCheckAuth();
 
     if (!checkAuth.response.ok) {
@@ -53,7 +55,9 @@ export async function Route(route: 'login' | 'menu' | 'lobby'): Promise<void> {
             await ShowMenuForm();
             break;
         case "lobby":
-            await ShowLobbyForm();
+            await RouteLobby();
+            break;
+        case "game":
             break;
     }
 }
@@ -82,40 +86,4 @@ async function ShowLoginForm(): Promise<void> {
     ScreenLoader.mainScreen.HideContent();
     ScreenLoader.mainScreen.loginForm.visible = true;
     window.location.hash = '/login';
-}
-
-async function ShowLobbyForm(): Promise<void> {
-    let profile = await getProfile();
-
-    if (!profile.response.ok) {
-        await ScreenLoader.ShowModal('Ошибка при<br>получении профиля');
-        return;
-    }
-
-    let gameState = await getProfileGetActiveLobbyState();
-
-    if (!gameState.response.ok) {
-        await ScreenLoader.ShowModal('Ошибка при получении<br>состояния лобби.');
-        return;
-    }
-
-    ScreenLoader.mainScreen.lobbyForm.startGameButton.visible = gameState.data.creatorId == profile.data.id;
-
-    let isWizardAlreadyAdded = false;
-
-    gameState.data.wizardsToAdd.forEach((element) => {
-        if (element.profileId == profile.data.id) {
-            isWizardAlreadyAdded = true;
-            return;
-        }
-    });
-
-    ScreenLoader.mainScreen.lobbyForm.addWizardButton.visible = !isWizardAlreadyAdded;
-
-    ScreenLoader.mainScreen.HideContent();
-    ScreenLoader.mainScreen.lobbyForm.visible = true;
-
-    await ScreenLoader.mainScreen.wizardHub.connection.start();
-    await ScreenLoader.mainScreen.wizardHub.connection.send(WizardHub.getWizardActiveLobbyAsync);
-    window.location.hash = '/lobby/' + ScreenLoader.mainScreen.lobbyForm.id;
 }

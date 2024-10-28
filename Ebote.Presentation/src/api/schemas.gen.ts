@@ -31,6 +31,65 @@ export const AxisSchema = {
     additionalProperties: false
 } as const;
 
+export const GameConstantsModelSchema = {
+    type: 'object',
+    properties: {
+        bulletDamage: {
+            type: 'number',
+            format: 'float'
+        },
+        startHitPoints: {
+            type: 'number',
+            format: 'float'
+        },
+        gameTickInMilliseconds: {
+            type: 'integer',
+            format: 'int32'
+        },
+        timeToReviveInSeconds: {
+            type: 'integer',
+            format: 'int32'
+        },
+        wizardHeight: {
+            type: 'number',
+            format: 'float'
+        },
+        wizardWidth: {
+            type: 'number',
+            format: 'float'
+        },
+        bulletHeight: {
+            type: 'number',
+            format: 'float'
+        },
+        bulletWidth: {
+            type: 'number',
+            format: 'float'
+        },
+        lobbyWidth: {
+            type: 'number',
+            format: 'float'
+        },
+        lobbyHeight: {
+            type: 'number',
+            format: 'float'
+        },
+        startXMargin: {
+            type: 'number',
+            format: 'float'
+        },
+        startYMargin: {
+            type: 'number',
+            format: 'float'
+        },
+        gameLifeTimeInSeconds: {
+            type: 'integer',
+            format: 'int32'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const GameLobbySchema = {
     type: 'object',
     properties: {

@@ -10,6 +10,22 @@ export type Axis = {
     y?: number;
 };
 
+export type GameConstantsModel = {
+    bulletDamage?: number;
+    startHitPoints?: number;
+    gameTickInMilliseconds?: number;
+    timeToReviveInSeconds?: number;
+    wizardHeight?: number;
+    wizardWidth?: number;
+    bulletHeight?: number;
+    bulletWidth?: number;
+    lobbyWidth?: number;
+    lobbyHeight?: number;
+    startXMargin?: number;
+    startYMargin?: number;
+    gameLifeTimeInSeconds?: number;
+};
+
 export type GameLobby = {
     gameTickInMilliseconds?: number;
     readonly isGameStarted?: boolean;
@@ -120,6 +136,14 @@ export type GetLobbyListError = unknown;
 export type GetLobbyActiveResponse = (Array<(string)>);
 
 export type GetLobbyActiveError = unknown;
+
+export type GetLobbyStartResponse = (unknown);
+
+export type GetLobbyStartError = unknown;
+
+export type GetLobbyConstantsResponse = (GameConstantsModel);
+
+export type GetLobbyConstantsError = unknown;
 
 export type GetProfileResponse = (Profile);
 

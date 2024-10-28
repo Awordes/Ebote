@@ -1,13 +1,12 @@
 import { Assets, Container, Graphics } from "pixi.js";
 import { AssetStore } from "../../Utils/AssetStore";
 import { GetScaleToContainer, ScaleAndCenterToContainer } from "../../Utils/SizeHelper";
-import { LoginForm } from "./LoginForm";
-import { GameLobby, MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType } from "../../API";
+import { LoginForm } from "../Forms/LoginForm";
+import { MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType } from "../../API";
 import { ScreenLoader } from "../ScreenLoader";
-import { MenuForm } from "./MenuForm";
-import { Route } from "../../Utils/Router";
-import { LobbyForm } from "./LobbyForm";
-import { WizardHub } from "../../SignalR/WizardHub";
+import { Route } from "../../Router/Router";
+import { MenuForm } from "../Forms/MenuForm";
+import { LobbyForm } from "../Forms/LobbyForm";
 
 export class MainScreen extends Container {
     private gameName: Graphics;
@@ -16,7 +15,6 @@ export class MainScreen extends Container {
     public loginForm: LoginForm;
     public menuForm: MenuForm;
     public lobbyForm: LobbyForm;
-    public wizardHub: WizardHub;
 
     public static async Create(): Promise<MainScreen> {
         let mainScreen = new MainScreen();
@@ -45,7 +43,7 @@ export class MainScreen extends Container {
         return mainScreen;
     }
 
-    private async CreateContentBox(): Promise<void> {
+    private async CreateContentBox() {
         this.content = new Container();
         let border = new Graphics();
         let leftPadding = 28;
@@ -67,18 +65,18 @@ export class MainScreen extends Container {
         this.scroll.addChild(this.content);
     }
 
-    private async CreateLoginForm(): Promise<void> {
+    private async CreateLoginForm() {
         this.loginForm = await LoginForm.Create();
         ScaleAndCenterToContainer(this.loginForm, this.content);
     
-        this.loginForm.loginButton.on('pointerup', async () => {
+        this.loginForm.loginButton.on('pointerup', async () => { 
             let response = await postAccountLogin({
                 body: {
                     login: this.loginForm.loginInput.fieldValue,
                     passwordHash: this.loginForm.passwordInput.fieldValue
                 }
             });
-
+        
             if (!response.response.ok) {
                 ScreenLoader.ShowModal('Не удалось<br>авторизоваться.');
                 return;
@@ -105,7 +103,7 @@ export class MainScreen extends Container {
         this.content.addChild(this.loginForm);
     }
 
-    public async CreateMenuForm(): Promise<void> {
+    private async CreateMenuForm() {
         this.menuForm = await MenuForm.Create();
         ScaleAndCenterToContainer(this.menuForm, this.content, 0.7);
 
@@ -134,19 +132,11 @@ export class MainScreen extends Container {
         this.content.addChild(this.menuForm);
     }
 
-    public async CreateLobbyForm(): Promise<void> {
+    private async CreateLobbyForm() {
         this.lobbyForm = await LobbyForm.Create();
         ScaleAndCenterToContainer(this.lobbyForm, this.content);
 
-        this.wizardHub = new WizardHub();
-        this.wizardHub.connection.on(WizardHub.getWizardActiveLobbyAsync, (gamestate: GameLobby) =>{
-            this.lobbyForm.updateWizardList(gamestate.wizardsToAdd);
-        });
-
-        this.lobbyForm.backButton.on('pointerup', async () => {
-            await this.wizardHub.connection.stop();
-            Route('menu');
-        });
+        this.lobbyForm.backButton.on('pointerup', async () => { Route('menu'); });
 
         this.lobbyForm.addWizardButton.on('pointerup', async () => {
             if (this.lobbyForm.sideType.selected == 2) {

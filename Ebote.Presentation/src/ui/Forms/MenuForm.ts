@@ -1,7 +1,7 @@
 import { FancyButton } from "@pixi/ui";
 import { Container } from "pixi.js";
-import { CreateButton } from "./Button";
 import { TextService } from "../../Localization/TextService";
+import { CreateButton } from "../Components/Button";
 
 export class MenuForm extends Container {
     public createLobbyButton: FancyButton;
