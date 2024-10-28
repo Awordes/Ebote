@@ -61,11 +61,5 @@ namespace Ebote.API.Controllers
 
             return Ok();
         }
-
-        [HttpGet("Constants")]
-        public ActionResult<GameConstantsModel> GetGameConstants()
-        {
-            return Ok(GameConstants.Consts);
-        }
     }
 }

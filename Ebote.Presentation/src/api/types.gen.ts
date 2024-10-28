@@ -108,6 +108,10 @@ export type GetAccountCheckAuthResponse = (unknown);
 
 export type GetAccountCheckAuthError = unknown;
 
+export type GetConstantsResponse = (GameConstantsModel);
+
+export type GetConstantsError = unknown;
+
 export type PostLobbyResponse = (Lobby);
 
 export type PostLobbyError = unknown;
@@ -130,10 +134,6 @@ export type GetLobbyActiveError = unknown;
 export type GetLobbyStartResponse = (unknown);
 
 export type GetLobbyStartError = unknown;
-
-export type GetLobbyConstantsResponse = (GameConstantsModel);
-
-export type GetLobbyConstantsError = unknown;
 
 export type GetProfileResponse = (Profile);
 
