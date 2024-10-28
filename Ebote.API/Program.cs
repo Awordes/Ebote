@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddSignalR();
-builder.Services.AddEboteDomain();
+builder.Services.AddEboteDomain(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration.GetSection(DbSettings.SectionName).Get<DbSettings>());
 

@@ -40,5 +40,32 @@ namespace Ebote.API.Controllers
         {
             return Ok(gameStorage.Lobbies.Values.Select(x => x.CreateTime).ToArray());
         }
+
+        [HttpGet("Start")]
+        public async Task<IActionResult> StartActiveLobby()
+        {
+            var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
+            var profile = await profileRepository.GetByIdAsync(profileId);
+
+            if (profile.ActiveLobby is null)
+                throw new Exception("ActiveLobby not found");
+            
+            if (!gameStorage.Lobbies.TryGetValue(profile.ActiveLobby.Id, out var gameLobby))
+                throw new Exception("Lobby not found");
+
+            if (gameLobby.CreatorId != profileId)
+                throw new Exception("Authorized profile don't have access to start activeLobby");
+            
+            gameLobby.Start();
+
+            return Ok();
+        }
+
+        [HttpGet("Constants")]
+        public ActionResult<GameConstantsModel> GetGameConstants()
+        {
+            return Ok(GameConstants.Consts);
+        }
     }
 }

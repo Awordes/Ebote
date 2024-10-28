@@ -31,13 +31,13 @@ public class Wizard(Guid profileId, MagicType magicType, string name, SideType s
 
     public void Spawn()
     {
-        CurrentHitPoints = GameConstants.StartHitPoints;
+        CurrentHitPoints = GameConstants.Consts.StartHitPoints;
         ChangePosition(SpawnPosition);
     }
 
     public async Task Death()
     {
-        TimeToReviveInSeconds = GameConstants.TimeToReviveInSeconds;
+        TimeToReviveInSeconds = GameConstants.Consts.TimeToReviveInSeconds;
 
         while (TimeToReviveInSeconds > 0)
         {

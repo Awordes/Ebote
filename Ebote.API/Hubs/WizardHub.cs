@@ -40,7 +40,7 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         do
         {
             await Clients.Caller.SendAsync(nameof(GetWizardActiveLobbyAsync), gameLobby);
-            await Task.Delay(GameConstants.GameTickInMilliseconds);
+            await Task.Delay(GameConstants.Consts.GameTickInMilliseconds);
         } while(Users.Contains(Context.ConnectionId));
 
         Console.WriteLine($"User {Context.UserIdentifier} stop watch lobby {gameLobby.Id}");

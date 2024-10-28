@@ -2,7 +2,7 @@ using Ebote.Engine;
 
 namespace Ebote.Core;
 
-public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstants.GameTickInMilliseconds)
+public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstants.Consts.GameTickInMilliseconds)
 {
     public Guid Id { get; init; } = id;
 
@@ -14,7 +14,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public DateTime CreateTime { get; init; } = DateTime.Now;
 
-    public DateTime LobbyEndTime { get; init; } = DateTime.Now.AddSeconds(GameConstants.GameLifeTimeInSeconds);
+    public DateTime LobbyEndTime { get; init; } = DateTime.Now.AddSeconds(GameConstants.Consts.GameLifeTimeInSeconds);
 
     public Dictionary<Guid, Wizard> Wizards { get; init; } = [];
 
@@ -45,13 +45,13 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
             if (wizards[i].SideType == SideType.Green)
             {
-                x = GameConstants.StartXMargin;
-                y = GameConstants.LobbyHeight / (greenTeamCount + 1) * (i + 1);
+                x = GameConstants.Consts.StartXMargin;
+                y = GameConstants.Consts.LobbyHeight / (greenTeamCount + 1) * (i + 1);
             }
             else
             {
-                x = GameConstants.LobbyWidth - GameConstants.WizardWidth - GameConstants.StartXMargin;
-                y = GameConstants.LobbyHeight / (redTeamCount + 1) * (i + 1);
+                x = GameConstants.Consts.LobbyWidth - GameConstants.Consts.WizardWidth - GameConstants.Consts.StartXMargin;
+                y = GameConstants.Consts.LobbyHeight / (redTeamCount + 1) * (i + 1);
             }
 
             var wizard = new Wizard(
@@ -60,8 +60,8 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
                 wizards[i].Name,
                 wizards[i].SideType,
                 new Point(x, y),
-                GameConstants.WizardWidth,
-                GameConstants.WizardHeight);
+                GameConstants.Consts.WizardWidth,
+                GameConstants.Consts.WizardHeight);
 
             Wizards.TryAdd(wizard.Id, wizard);
         }
