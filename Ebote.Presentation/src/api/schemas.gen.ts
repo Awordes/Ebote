@@ -129,16 +129,9 @@ export const GameLobbySchema = {
             format: 'date-time'
         },
         wizards: {
-            type: 'object',
-            additionalProperties: {
-                '$ref': '#/components/schemas/Wizard'
-            },
-            nullable: true
-        },
-        wizardsToAdd: {
             type: 'array',
             items: {
-                '$ref': '#/components/schemas/WizardToAdd'
+                '$ref': '#/components/schemas/Wizard'
             },
             nullable: true
         }
@@ -292,27 +285,6 @@ export const WizardModelSchema = {
         },
         magicType: {
             '$ref': '#/components/schemas/MagicType'
-        }
-    },
-    additionalProperties: false
-} as const;
-
-export const WizardToAddSchema = {
-    type: 'object',
-    properties: {
-        profileId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        magicType: {
-            '$ref': '#/components/schemas/MagicType'
-        },
-        sideType: {
-            '$ref': '#/components/schemas/SideType'
-        },
-        name: {
-            type: 'string',
-            nullable: true
         }
     },
     additionalProperties: false

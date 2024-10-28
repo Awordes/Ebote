@@ -16,55 +16,36 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public DateTime LobbyEndTime { get; init; } = DateTime.Now.AddSeconds(GameConstants.Consts.GameLifeTimeInSeconds);
 
-    public Dictionary<Guid, Wizard> Wizards { get; init; } = [];
-
-    public ICollection<WizardToAdd> WizardsToAdd { get; init; } = [];
+    public ICollection<Wizard> Wizards { get; init; } = [];
 
     public void AddWizard(Guid profileId, MagicType magicType, SideType sideType, string name)
     {
         if (IsGameStarted) throw new Exception("Game already started.");
 
-        if (WizardsToAdd.Any(x => x.ProfileId == profileId))
+        if (Wizards.Any(x => x.ProfileId == profileId))
             throw new Exception("Profile already added.");
 
-        WizardsToAdd.Add(new WizardToAdd(profileId, magicType, sideType, name));
+        var wizard = new Wizard(
+            profileId,
+            magicType,
+            name,
+            sideType,
+            new Point(0, 0),
+            GameConstants.Consts.WizardWidth,
+            GameConstants.Consts.WizardHeight);
+
+        wizard.EyeDirection = sideType == SideType.Green
+            ? new Axis(1, 0)
+            : new Axis(-1, 0);
+
+        Wizards.Add(wizard);
+
+        SetWizardsToDefaultPositions();
     }
 
     public override void Start()
     {
         if (IsGameStarted) throw new Exception("Game already started.");
-
-        var greenTeamCount = WizardsToAdd.Count(x => x.SideType == SideType.Green);
-        var redTeamCount = WizardsToAdd.Count(x => x.SideType == SideType.Red);
-        var wizards = WizardsToAdd.ToArray();
-
-        for (int i = 0; i < wizards.Length; i++)
-        {
-            float x;
-            float y;
-
-            if (wizards[i].SideType == SideType.Green)
-            {
-                x = GameConstants.Consts.StartXMargin;
-                y = GameConstants.Consts.LobbyHeight / (greenTeamCount + 1) * (i + 1);
-            }
-            else
-            {
-                x = GameConstants.Consts.LobbyWidth - GameConstants.Consts.WizardWidth - GameConstants.Consts.StartXMargin;
-                y = GameConstants.Consts.LobbyHeight / (redTeamCount + 1) * (i + 1);
-            }
-
-            var wizard = new Wizard(
-                wizards[i].ProfileId,
-                wizards[i].MagicType,
-                wizards[i].Name,
-                wizards[i].SideType,
-                new Point(x, y),
-                GameConstants.Consts.WizardWidth,
-                GameConstants.Consts.WizardHeight);
-
-            Wizards.TryAdd(wizard.Id, wizard);
-        }
 
         StartTime = DateTime.Now;
 
@@ -85,5 +66,32 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
         }
 
         return Task.CompletedTask;
+    }
+
+    private void SetWizardsToDefaultPositions()
+    {
+        var greenTeamCount = Wizards.Count(x => x.SideType == SideType.Green);
+        var redTeamCount = Wizards.Count(x => x.SideType == SideType.Red);
+
+        var i = 0;
+        float x = 0;
+        float y = 0;
+
+        foreach (var wizard in Wizards)
+        {
+            if (wizard.SideType == SideType.Green)
+            {
+                x = GameConstants.Consts.StartXMargin;
+                y = GameConstants.Consts.LobbyHeight / (greenTeamCount + 1) * (i + 1);
+            }
+            else
+            {
+                x = GameConstants.Consts.LobbyWidth - GameConstants.Consts.WizardWidth - GameConstants.Consts.StartXMargin;
+                y = GameConstants.Consts.LobbyHeight / (redTeamCount + 1) * (i + 1);
+            }
+
+            wizard.ChangePosition(new Point(x, y));
+            i++;
+        }
     }
 }

@@ -3,10 +3,8 @@ import { Container, Graphics, HTMLText } from "pixi.js";
 import { TextService } from "../../Localization/TextService";
 import { AssetStore } from "../../Utils/AssetStore";
 import { ScaleToContainer } from "../../Utils/SizeHelper";
-import { WizardToAdd } from "../../API";
 import { WizardDescriptions } from "../../Utils/WizardDescriptions";
 import { InputField } from "../Components/InputField";
-import { TeamList } from "../Components/TeamList";
 import { CreateButton } from "../Components/Button";
 import { CreateSideTypeSelector } from "../Components/SideTypeSelector";
 import { CreateWizardTypeSelector } from "../Components/WizardTypeSelector";
@@ -19,8 +17,6 @@ export class LobbyForm extends Container {
     public wizardName: InputField;
     public startGameButton: FancyButton;
     public addWizardButton: FancyButton;
-    private teamList: TeamList;
-    private teamListBorder: Graphics;
     public id: string;
 
     public static async Create(lobbyId?: string): Promise<LobbyForm> {
@@ -58,28 +54,7 @@ export class LobbyForm extends Container {
 
         lobbyForm.magicType = await CreateWizardTypeSelector();
         lobbyForm.magicType.position.set(0, lobbyForm.backButton.height + 5);
-        lobbyForm.magicType.onChange.connect((id: number) => {lobbyForm.ShowDescription(id)});        
-
-        let descriptionBorder = new Graphics();
-        descriptionBorder.rect(0, 0, 200, lobbyForm.magicType.height);
-        descriptionBorder.fill(0x000000);
-        
-        lobbyForm.description = new HTMLText({
-            text: WizardDescriptions.Air,
-            style: {
-                fontFamily: AssetStore.monocraftFont.alias,
-                fontSize: 100,
-                wordWrap: true,
-                wordWrapWidth: 2700
-            }
-        });
-
-        lobbyForm.description.position.set(
-            lobbyForm.magicType.width + 1,
-            lobbyForm.magicType.y
-        );
-
-        ScaleToContainer(lobbyForm.description, descriptionBorder);
+        lobbyForm.magicType.onChange.connect((id: number) => {lobbyForm.ShowDescription(id)});
 
         lobbyForm.addWizardButton = await CreateButton(TextService.GetStringValue('addWizard'));
 
@@ -115,12 +90,12 @@ export class LobbyForm extends Container {
         lobbyUrlDescBorder.fill(0x000000);
         ScaleToContainer(lobbyUrlDescription, lobbyUrlDescBorder);
 
-        lobbyForm.teamListBorder = new Graphics();
-        lobbyForm.teamListBorder.rect(0, 0, 80, lobbyForm.description.height);
-        lobbyForm.teamListBorder.fill(0x000000);
-
-        lobbyForm.teamList = new TeamList({
-            text: TextService.GetStringValue('wizardsInLobbyy'),
+        let descriptionBorder = new Graphics();
+        descriptionBorder.rect(0, 0, lobbyUrlDescription.x + lobbyUrlDescription.width, lobbyForm.magicType.height);
+        descriptionBorder.fill(0x000000);
+        
+        lobbyForm.description = new HTMLText({
+            text: WizardDescriptions.Air,
             style: {
                 fontFamily: AssetStore.monocraftFont.alias,
                 fontSize: 100,
@@ -128,12 +103,13 @@ export class LobbyForm extends Container {
                 wordWrapWidth: 2700
             }
         });
-        lobbyForm.teamList.position.set(
-            lobbyForm.description.x + lobbyForm.description.width + 1,
-            lobbyForm.description.y
+
+        lobbyForm.description.position.set(
+            lobbyForm.magicType.width + 1,
+            lobbyForm.magicType.y
         );
 
-        ScaleToContainer(lobbyForm.teamList, lobbyForm.teamListBorder);
+        ScaleToContainer(lobbyForm.description, descriptionBorder);
 
         lobbyForm.addChild(lobbyForm.description);
         lobbyForm.addChild(lobbyForm.backButton);
@@ -142,18 +118,10 @@ export class LobbyForm extends Container {
         lobbyForm.addChild(lobbyForm.addWizardButton);
         lobbyForm.addChild(lobbyForm.startGameButton);
         lobbyForm.addChild(sideDescription);
-        lobbyForm.addChild(lobbyForm.teamList);
         lobbyForm.addChild(lobbyUrlDescription);
         lobbyForm.addChild(lobbyForm.wizardName);
 
-        lobbyForm.updateWizardList([]);
-
         return lobbyForm;
-    }
-
-    public updateWizardList(wizards: WizardToAdd[]) {
-        this.teamList.updateWizardList(wizards);
-        ScaleToContainer(this.teamList, this.teamListBorder);
     }
 
     private ShowDescription(magicType: number) {

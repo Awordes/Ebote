@@ -1,5 +1,4 @@
 import { getProfile, getProfileGetActiveLobbyState } from "../../API";
-import { WizardHub } from "../../SignalR/WizardHub";
 import { ScreenLoader } from "../../UI/ScreenLoader";
 import { Route } from "../Router";
 
@@ -27,7 +26,7 @@ export async function RouteLobby() {
 
     let isWizardAlreadyAdded = false;
 
-    gameState.data.wizardsToAdd.forEach((element) => {
+    gameState.data.wizards.forEach(element => {
         if (element.profileId == profile.data.id) {
             isWizardAlreadyAdded = true;
             return;

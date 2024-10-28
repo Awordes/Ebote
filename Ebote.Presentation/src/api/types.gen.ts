@@ -35,10 +35,7 @@ export type GameLobby = {
     readonly startTime?: (string) | null;
     createTime?: string;
     lobbyEndTime?: string;
-    wizards?: {
-        [key: string]: Wizard;
-    } | null;
-    wizardsToAdd?: Array<WizardToAdd> | null;
+    wizards?: Array<Wizard> | null;
 };
 
 export type Lobby = {
@@ -85,13 +82,6 @@ export type WizardModel = {
     name: (string) | null;
     sideType?: SideType;
     magicType?: MagicType;
-};
-
-export type WizardToAdd = {
-    profileId?: string;
-    magicType?: MagicType;
-    sideType?: SideType;
-    name?: (string) | null;
 };
 
 export type PostAccountSignUpData = {
