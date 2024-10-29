@@ -74,6 +74,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
         var redTeamCount = Wizards.Count(x => x.SideType == SideType.Red);
 
         var i = 0;
+        var j = 0;
         float x = 0;
         float y = 0;
 
@@ -83,15 +84,16 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
             {
                 x = GameConstants.Consts.StartXMargin;
                 y = GameConstants.Consts.LobbyHeight / (greenTeamCount + 1) * (i + 1);
+                i++;
             }
             else
             {
                 x = GameConstants.Consts.LobbyWidth - GameConstants.Consts.WizardWidth - GameConstants.Consts.StartXMargin;
-                y = GameConstants.Consts.LobbyHeight / (redTeamCount + 1) * (i + 1);
+                y = GameConstants.Consts.LobbyHeight / (redTeamCount + 1) * (j + 1);
+                j++;
             }
 
             wizard.ChangePosition(new Point(x, y));
-            i++;
         }
     }
 }
