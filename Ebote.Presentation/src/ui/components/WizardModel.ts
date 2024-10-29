@@ -1,9 +1,11 @@
 import { Assets, Container, Graphics, UnresolvedAsset } from "pixi.js";
-import { getLobbyConstants, Wizard } from "../../API";
+import { Wizard } from "../../API";
 import { AssetStore } from "../../Utils/AssetStore";
 import { GetScaleToValue } from "../../Utils/SizeHelper";
+import { ScreenLoader } from "../ScreenLoader";
 
 export class WizardModel extends Container {
+    private sprite: Graphics;
     
     public static async Create(wizard: Wizard): Promise<WizardModel> {
         let wizardModel = new WizardModel();
@@ -25,14 +27,26 @@ export class WizardModel extends Container {
                 break;
         }
 
-        let sprite = new Graphics(await Assets.load(asset));
+        wizardModel.sprite = new Graphics(await Assets.load(asset));
 
-        let gameConstants = await getLobbyConstants();
+        wizardModel.sprite.scale.set(
+            GetScaleToValue(wizardModel.sprite, ScreenLoader.constants.wizardWidth, ScreenLoader.constants.wizardHeight));
 
-        sprite.scale.set(GetScaleToValue(sprite, gameConstants.data.wizardWidth, gameConstants.data.wizardHeight));
-
-        wizardModel.addChild(sprite);
+        wizardModel.addChild(wizardModel.sprite);
 
         return wizardModel;
+    }
+
+    public async UpdateWizard(wizard: Wizard) {
+        this.x = wizard.position.x;
+        this.y = wizard.position.y;
+
+        if (this.scale.x > 0 && wizard.eyeDirection.x < 0) {
+            this.scale.x *= -1;
+            this.position.x = this.position.x + this.width
+        } else if (this.scale.x < 0 && wizard.eyeDirection.x > 0) {
+            this.scale.x *= -1;
+            this.position.x = this.position.x - this.width;
+        }
     }
 }

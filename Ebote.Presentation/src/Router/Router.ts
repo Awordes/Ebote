@@ -1,4 +1,4 @@
-import { getAccountCheckAuth, getProfile, postProfileUpdateActiveLobbyByLobbyId } from "../API";
+import { getAccountCheckAuth, getProfile, getProfileGetActiveLobbyState, postProfileUpdateActiveLobbyByLobbyId } from "../API";
 import { ScreenLoader } from "../UI/ScreenLoader";
 import { RouteLobby } from "./Routes/LobbyRouter";
 
@@ -34,6 +34,11 @@ export async function InitRoute() {
         }
     } else {
         await Route('menu');
+    }
+
+    let profile = await getProfile();    
+    if (profile.data.activeLobby) {
+        await ScreenLoader.gameScreen.InitState((await getProfileGetActiveLobbyState()).data);
     }
 }
 
