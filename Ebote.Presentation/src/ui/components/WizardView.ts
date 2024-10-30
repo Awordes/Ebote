@@ -34,11 +34,12 @@ export class WizardView extends Container {
 
         wizardModel.addChild(wizardModel.sprite);
 
+        wizardModel.pivot.x = wizardModel.width * 0.67;
+
         return wizardModel;
     }
 
     public async UpdateWizard(wizard: Wizard) {
-        console.log(wizard.position.x + ' ' + wizard.position.y);
         this.x = wizard.position.x;
         this.y = wizard.position.y;
 
