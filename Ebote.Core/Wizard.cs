@@ -47,4 +47,10 @@ public class Wizard(Guid profileId, MagicType magicType, string name, SideType s
 
         Spawn();
     }
+
+    public void Move(Axis axis)
+    {
+        EyeDirection = axis;
+        base.Move(new Point(axis.X * GameConstants.Consts.WizardSpeed, axis.Y * GameConstants.Consts.WizardSpeed));
+    }
 }

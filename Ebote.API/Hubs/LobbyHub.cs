@@ -1,13 +1,12 @@
 using Ebote.Core;
 using Ebote.Domain.Repositories;
-using Ebote.Engine;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Ebote.API.Hubs;
 
 [Authorize]
-public class WizardHub(IProfileRepository profileRepository, GameStorage gameStorage): Hub
+public class LobbyHub(IProfileRepository profileRepository, GameStorage gameStorage): Hub
 {
     private static readonly Dictionary<string, WizardHubUserModel> Users = [];
 
@@ -29,7 +28,7 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         return base.OnDisconnectedAsync(exception);
     }
 
-    public void MoveWizard(Axis axis)
+    public async Task GetWizardActiveLobbyAsync()
     {
         if (!Users.TryGetValue(Context.ConnectionId, out var userModel))
             throw new Exception("Connection not found");
@@ -40,9 +39,14 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         if (!gameStorage.Lobbies.TryGetValue(userModel.ActiveLobbyId.Value, out var gameLobby))
             throw new Exception("Lobby not found");
 
-        var wizard = gameLobby.Wizards.FirstOrDefault(x => x.ProfileId == userModel.ProfileId)
-            ?? throw new Exception("Wizard not found in lobby");
-        
-        wizard.Move(axis);
+        Console.WriteLine($"User {Context.UserIdentifier} start watch lobby {gameLobby.Id}");
+
+        do
+        {
+            await Clients.Caller.SendAsync(nameof(GetWizardActiveLobbyAsync), gameLobby);
+            await Task.Delay(GameConstants.Consts.GameTickInMilliseconds);
+        } while(Users.ContainsKey(Context.ConnectionId));
+
+        Console.WriteLine($"User {Context.UserIdentifier} stop watch lobby {gameLobby.Id}");
     }
 }

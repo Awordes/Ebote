@@ -27,4 +27,6 @@ public class GameConstantsModel
     public float StartYMargin { get; init; }
 
     public int GameLifeTimeInSeconds { get; init; }
+
+    public float WizardSpeed { get; init; }
 }

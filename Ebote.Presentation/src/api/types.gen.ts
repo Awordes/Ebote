@@ -24,6 +24,7 @@ export type GameConstantsModel = {
     startXMargin?: number;
     startYMargin?: number;
     gameLifeTimeInSeconds?: number;
+    wizardSpeed?: number;
 };
 
 export type GameLobby = {
@@ -131,9 +132,9 @@ export type GetLobbyActiveResponse = (Array<(string)>);
 
 export type GetLobbyActiveError = unknown;
 
-export type GetLobbyStartResponse = (unknown);
+export type PostLobbyStartResponse = (unknown);
 
-export type GetLobbyStartError = unknown;
+export type PostLobbyStartError = unknown;
 
 export type GetProfileResponse = (Profile);
 

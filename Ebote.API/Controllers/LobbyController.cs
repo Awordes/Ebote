@@ -41,7 +41,7 @@ namespace Ebote.API.Controllers
             return Ok(gameStorage.Lobbies.Values.Select(x => x.CreateTime).ToArray());
         }
 
-        [HttpGet("Start")]
+        [HttpPost("Start")]
         public async Task<IActionResult> StartActiveLobby()
         {
             var profileId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);

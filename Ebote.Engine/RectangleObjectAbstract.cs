@@ -42,7 +42,7 @@ public class RectangleObjectAbstract: IGameObject
         RightBottom = new Point(Position.X + Width, Position.X + Height);
     }
 
-    public void Move(Point positionChange)
+    public virtual void Move(Point positionChange)
     {
         var newPosition = new Point(
             Position.X + positionChange.X,

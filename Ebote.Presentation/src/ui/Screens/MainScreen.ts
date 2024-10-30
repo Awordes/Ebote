@@ -2,7 +2,7 @@ import { Assets, Container, Graphics } from "pixi.js";
 import { AssetStore } from "../../Utils/AssetStore";
 import { GetScaleToContainer, ScaleAndCenterToContainer } from "../../Utils/SizeHelper";
 import { LoginForm } from "../Forms/LoginForm";
-import { MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postProfileAddWizard, SideType } from "../../API";
+import { MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postLobbyStart, postProfileAddWizard, SideType } from "../../API";
 import { ScreenLoader } from "../ScreenLoader";
 import { Route } from "../../Router/Router";
 import { MenuForm } from "../Forms/MenuForm";
@@ -162,6 +162,11 @@ export class MainScreen extends Container {
             } else {
                 ScreenLoader.ShowModal('Не удалось<br>добавить мага.');
             }
+        });
+
+        this.lobbyForm.startGameButton.on('pointerup', async () => { 
+            await postLobbyStart();
+            await Route('game');
         });
 
         this.content.addChild(this.lobbyForm);

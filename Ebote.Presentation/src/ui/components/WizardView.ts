@@ -4,11 +4,11 @@ import { AssetStore } from "../../Utils/AssetStore";
 import { GetScaleToValue } from "../../Utils/SizeHelper";
 import { ScreenLoader } from "../ScreenLoader";
 
-export class WizardModel extends Container {
+export class WizardView extends Container {
     private sprite: Graphics;
     
-    public static async Create(wizard: Wizard): Promise<WizardModel> {
-        let wizardModel = new WizardModel();
+    public static async Create(wizard: Wizard): Promise<WizardView> {
+        let wizardModel = new WizardView();
 
         let asset: UnresolvedAsset;
         switch (wizard.magicType)
@@ -38,15 +38,18 @@ export class WizardModel extends Container {
     }
 
     public async UpdateWizard(wizard: Wizard) {
+        console.log(wizard.position.x + ' ' + wizard.position.y);
         this.x = wizard.position.x;
         this.y = wizard.position.y;
 
         if (this.scale.x > 0 && wizard.eyeDirection.x < 0) {
-            this.scale.x *= -1;
-            this.position.x = this.position.x + this.width
+            this.Flip();
         } else if (this.scale.x < 0 && wizard.eyeDirection.x > 0) {
-            this.scale.x *= -1;
-            this.position.x = this.position.x - this.width;
+            this.Flip();
         }
+    }
+
+    private Flip() {
+        this.scale.x *= -1;
     }
 }

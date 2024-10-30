@@ -36,13 +36,13 @@ export async function InitRoute() {
         await Route('menu');
     }
 
-    let profile = await getProfile();    
+    let profile = await getProfile();
     if (profile.data.activeLobby) {
-        await ScreenLoader.gameScreen.InitState((await getProfileGetActiveLobbyState()).data);
+        await ScreenLoader.gameScreen.InitState();
     }
 }
 
-export async function Route(route: 'login' | 'menu' | 'lobby' | 'game'): Promise<void> {
+export async function Route(route: 'login' | 'menu' | 'lobby' | 'game') {
     const checkAuth = await getAccountCheckAuth();
 
     if (!checkAuth.response.ok) {
@@ -50,6 +50,9 @@ export async function Route(route: 'login' | 'menu' | 'lobby' | 'game'): Promise
         await ShowLoginForm();
         return;
     }
+
+    ScreenLoader.mainScreen.HideContent();
+    await StopGame();
 
     switch (route)
     {
@@ -63,12 +66,17 @@ export async function Route(route: 'login' | 'menu' | 'lobby' | 'game'): Promise
             await RouteLobby();
             break;
         case "game":
+            await StartGame();
             break;
+    }
+
+    let profile = await getProfile();
+    if (profile.data.activeLobby) {
+        await ScreenLoader.gameScreen.InitState();
     }
 }
 
-async function ShowMenuForm(): Promise<void> {
-    ScreenLoader.mainScreen.HideContent();
+async function ShowMenuForm() {
     let profile = await getProfile();
 
     if (!profile.response.ok) {
@@ -87,8 +95,17 @@ async function ShowMenuForm(): Promise<void> {
     window.location.hash = '/menu';
 }
 
-async function ShowLoginForm(): Promise<void> {
-    ScreenLoader.mainScreen.HideContent();
+async function ShowLoginForm() {
     ScreenLoader.mainScreen.loginForm.visible = true;
     window.location.hash = '/login';
+}
+
+async function StartGame() {
+    ScreenLoader.mainScreen.visible = false;
+    await ScreenLoader.gameScreen.StartGameListener();
+}
+
+async function StopGame() {
+    ScreenLoader.mainScreen.visible = true;
+    await ScreenLoader.gameScreen.StopGameListener();
 }

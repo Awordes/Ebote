@@ -35,7 +35,6 @@ export async function RouteLobby() {
 
     ScreenLoader.mainScreen.lobbyForm.addWizardButton.visible = !isWizardAlreadyAdded;
 
-    ScreenLoader.mainScreen.HideContent();
     ScreenLoader.mainScreen.lobbyForm.visible = true;
 
     window.location.hash = '/lobby/' + ScreenLoader.mainScreen.lobbyForm.id;

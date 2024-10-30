@@ -85,6 +85,10 @@ export const GameConstantsModelSchema = {
         gameLifeTimeInSeconds: {
             type: 'integer',
             format: 'int32'
+        },
+        wizardSpeed: {
+            type: 'number',
+            format: 'float'
         }
     },
     additionalProperties: false

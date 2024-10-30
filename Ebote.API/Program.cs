@@ -56,6 +56,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.MapHub<WizardHub>("/Wizard");
+app.MapHub<LobbyHub>("/LobbyHub");
 app.MapDefaultControllerRoute();
 
 app.Run();
