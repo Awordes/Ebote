@@ -28,6 +28,9 @@ export class GameScreen extends Container {
     }
 
     public async InitState() {
+        if (this.lobbyHub.connection.state != HubConnectionState.Disconnected)
+            return;
+
         await this.lobbyHub.connection.start();
 
         this.lobbyHub.connection.on(LobbyHub.getWizardActiveLobbyAsync,
