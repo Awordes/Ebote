@@ -79,9 +79,15 @@ export class AssetStore {
         data: { parseAsGraphicsContext: true, }
     };
 
-    public static readonly wizardWater: UnresolvedAsset = {
-        alias: 'wizardWater',
-        src: 'public/sprites/wizard-water.svg',
+    public static readonly wizardWaterFrame1: UnresolvedAsset = {
+        alias: 'wizardWaterFrame1',
+        src: 'public/sprites/wizard-water-frame1.svg',
+        data: { parseAsGraphicsContext: true, }
+    };
+
+    public static readonly wizardWaterFrame2: UnresolvedAsset = {
+        alias: 'wizardWaterFrame2',
+        src: 'public/sprites/wizard-water-frame2.svg',
         data: { parseAsGraphicsContext: true, }
     };
 

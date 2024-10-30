@@ -35,8 +35,8 @@ export async function CreateWizardTypeSelector(): Promise<RadioGroup> {
     wizards.push(
         new CheckBox({
             style: {
-                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardWater),
-                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardWater),
+                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardWaterFrame1),
+                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardWaterFrame1),
             }
         })
     );
