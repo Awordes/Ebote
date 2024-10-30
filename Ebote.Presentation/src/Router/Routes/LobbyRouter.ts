@@ -17,6 +17,8 @@ export async function RouteLobby() {
         return;
     }
 
+    window.location.hash = '/lobby/' + ScreenLoader.mainScreen.lobbyForm.id;
+
     if (gameState.data.isGameStarted) {
         await Route('game');
         return;
@@ -37,5 +39,4 @@ export async function RouteLobby() {
 
     ScreenLoader.mainScreen.lobbyForm.visible = true;
 
-    window.location.hash = '/lobby/' + ScreenLoader.mainScreen.lobbyForm.id;
 }
