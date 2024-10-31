@@ -201,7 +201,7 @@ async function CreateLobbyForm(mainScreen: MainScreen) {
 
     mainScreen.lobbyForm.startGameButton.on('pointerup', async () => { 
         await postLobbyStart();
-        await Route('game');
+        await Route('lobby');
     });
 
     mainScreen.content.addChild(mainScreen.lobbyForm);
