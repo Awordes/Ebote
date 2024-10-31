@@ -33,11 +33,6 @@ export function GetScaleToContainer(
     return scale * (factor ? factor : 1);
 }
 
-export function GetScaleToValue(source: Container, destWidth: number, destHeight: number, factor?: number): number {
-    let scaleX = destWidth / source.width;
-    let scaleY = destHeight / source.height;
-
-    let scale = Math.min(scaleX, scaleY);
-
-    return scale * (factor ? factor : 1);
+export function GetScaleToValue(source: number, dest: number, factor?: number): number {
+    return dest / source * (factor ? factor : 1);
 }
