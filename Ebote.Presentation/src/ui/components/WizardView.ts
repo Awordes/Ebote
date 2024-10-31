@@ -8,11 +8,12 @@ export class WizardView extends Container {
     private spriteFrame1: Graphics;
     private spriteFrame2: Graphics;
     private spriteFrame3: Graphics;
+    private spriteFrame4: Graphics;
     private wizardName: HTMLText;
     private hitPoints: HTMLText;
     private animationEventHandler = this.AnimationEvent.bind(this);
     private animationTick = 0;
-    private activeFrame = 1 | 2 | 3 | 4;
+    private activeFrame = 1 | 2 | 3 | 4 | 5 | 6;
     private secondFrameTimeMS = 200;
     
     public static async Create(wizard: Wizard): Promise<WizardView> {
@@ -21,6 +22,8 @@ export class WizardView extends Container {
         let asset1: UnresolvedAsset;
         let asset2: UnresolvedAsset;
         let asset3: UnresolvedAsset;
+        let asset4: UnresolvedAsset;
+
         switch (wizard.magicType)
         {
             case 0:
@@ -36,12 +39,15 @@ export class WizardView extends Container {
                 asset1 = AssetStore.wizardWaterFrame1;
                 asset2 = AssetStore.wizardWaterFrame2;
                 asset3 = AssetStore.wizardWaterFrame3;
+                asset4 = AssetStore.wizardWaterFrame4;
                 break;
         }
 
         wizardModel.spriteFrame1 = new Graphics(await Assets.load(asset1));
 
-        wizardModel.spriteFrame1.scale.set(GetScaleToValue(wizardModel.spriteFrame1, ScreenLoader.constants.wizardWidth, ScreenLoader.constants.wizardHeight));
+        wizardModel.spriteFrame1.scale.set(GetScaleToValue(
+            wizardModel.spriteFrame1, ScreenLoader.constants.wizardWidth, ScreenLoader.constants.wizardHeight
+        ));
 
         wizardModel.spriteFrame2 = new Graphics(await Assets.load(asset2));
         ScaleToContainer(wizardModel.spriteFrame2, wizardModel.spriteFrame1);
@@ -49,15 +55,20 @@ export class WizardView extends Container {
         wizardModel.spriteFrame3 = new Graphics(await Assets.load(asset3));
         ScaleToContainer(wizardModel.spriteFrame3, wizardModel.spriteFrame1);
 
+        wizardModel.spriteFrame4 = new Graphics(await Assets.load(asset4));
+        ScaleToContainer(wizardModel.spriteFrame4, wizardModel.spriteFrame1);
+
         wizardModel.addChild(wizardModel.spriteFrame1);
         wizardModel.addChild(wizardModel.spriteFrame2);
         wizardModel.addChild(wizardModel.spriteFrame3);
+        wizardModel.addChild(wizardModel.spriteFrame4);
 
         wizardModel.pivot.x = wizardModel.width * 0.67;
 
         wizardModel.activeFrame = 1;
         wizardModel.spriteFrame2.visible = false;
         wizardModel.spriteFrame3.visible = false;
+        wizardModel.spriteFrame4.visible = false;
         ScreenLoader.app.ticker.add(wizardModel.animationEventHandler);
 
         return wizardModel;
@@ -85,6 +96,7 @@ export class WizardView extends Container {
             this.spriteFrame1.visible = false;
             this.spriteFrame2.visible = false;
             this.spriteFrame3.visible = false;
+            this.spriteFrame4.visible = false;
 
             switch (this.activeFrame)
             {
@@ -96,14 +108,24 @@ export class WizardView extends Container {
                 case 2:
                     this.spriteFrame3.visible = true;
                     this.activeFrame = 3;
-                    this.secondFrameTimeMS = 300;
-                    break;
-                case 3:
-                    this.spriteFrame2.visible = true;
-                    this.activeFrame = 4;
                     this.secondFrameTimeMS = 100;
                     break;
+                case 3:
+                    this.spriteFrame4.visible = true;
+                    this.activeFrame = 4;
+                    this.secondFrameTimeMS = 300;
+                    break;
                 case 4:
+                    this.spriteFrame3.visible = true;
+                    this.activeFrame = 5;
+                    this.secondFrameTimeMS = 100;
+                    break;
+                case 5:
+                    this.spriteFrame2.visible = true;
+                    this.activeFrame = 6;
+                    this.secondFrameTimeMS = 100;
+                    break;
+                case 6:
                     this.spriteFrame1.visible = true;
                     this.activeFrame = 1;
                     this.secondFrameTimeMS = 300;

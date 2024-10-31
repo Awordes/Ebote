@@ -97,6 +97,12 @@ export class AssetStore {
         data: { parseAsGraphicsContext: true, }
     };
 
+    public static readonly wizardWaterFrame4: UnresolvedAsset = {
+        alias: 'wizardWaterFrame4',
+        src: 'public/sprites/wizard-water-frame4.svg',
+        data: { parseAsGraphicsContext: true, }
+    };
+
     public static readonly smallButtonDeafult: UnresolvedAsset = {
         alias: 'smallButtonDeafult',
         src: 'public/sprites/small-button-default.svg',
