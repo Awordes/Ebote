@@ -5,6 +5,7 @@ import { GameLobby, Axis } from "../../API";
 import { WizardView } from "../Components/WizardView";
 import { WizardHub } from "../../SignalR/WizardHub";
 import { HubConnectionState } from "@microsoft/signalr";
+import { Route } from "../../Router/Router";
 
 export class GameScreen extends Container {
     private lobbyHub: LobbyHub = new LobbyHub();
@@ -13,6 +14,7 @@ export class GameScreen extends Container {
     private moveAxis: Axis = { x: 0, y: 0 };
     private keyEventHandler = this.KeyEvent.bind(this);
     private frameEventHandler = this.FrameEvent.bind(this);
+    private isGameStarted: boolean = false;
 
     public static async Create(): Promise<GameScreen> {
         let gameScreen = new GameScreen();
@@ -27,16 +29,46 @@ export class GameScreen extends Container {
         return gameScreen;
     }
 
-    public async InitState() {
-        if (this.lobbyHub.connection.state != HubConnectionState.Disconnected)
-            return;
+    public async StartLobbyListener() {
+        if (this.lobbyHub.connection.state != HubConnectionState.Disconnected) {
+            await this.lobbyHub.connection.stop();
+        }
+
+        this.lobbyHub.connection.on(
+            LobbyHub.getWizardActiveLobbyAsync,
+            async (gameState: GameLobby) => {
+                if (gameState.isGameStarted && !this.isGameStarted) {
+                    this.isGameStarted = true;
+                    await Route('lobby');
+                }
+                await this.UpdateState(gameState);
+            }
+        );
 
         await this.lobbyHub.connection.start();
-
-        this.lobbyHub.connection.on(LobbyHub.getWizardActiveLobbyAsync,
-            async (gameState: GameLobby) => { await this.UpdateState(gameState); });
-
         await this.lobbyHub.connection.send(LobbyHub.getWizardActiveLobbyAsync);
+    }
+
+    public async StopLobbyListener() {
+        if (this.lobbyHub.connection.state != HubConnectionState.Disconnected) {
+            await this.lobbyHub.connection.stop();
+        }
+    }
+
+    public async StartGame() {
+        await this.wizardHub.connection.start();
+        window.addEventListener("keydown", this.keyEventHandler);
+        window.addEventListener("keyup", this.keyEventHandler);
+        ScreenLoader.app.ticker.add(this.frameEventHandler);
+        this.moveAxis = { x: 0, y: 0};
+    }
+
+    public async StopGame() {
+        await this.wizardHub.connection.stop();
+        window.removeEventListener("keydown", this.keyEventHandler);
+        window.removeEventListener("keyup", this.keyEventHandler);
+        ScreenLoader.app.ticker.remove(this.frameEventHandler);
+        this.moveAxis = { x: 0, y: 0};
     }
 
     public async UpdateState(gamestate: GameLobby) {
@@ -51,37 +83,23 @@ export class GameScreen extends Container {
         }
     }
 
-    public async StartGameListener() {
-        await this.wizardHub.connection.start();
-        window.addEventListener("keydown", this.keyEventHandler);
-        window.addEventListener("keyup", this.keyEventHandler);
-        ScreenLoader.app.ticker.add(this.frameEventHandler);
-    }
-
-    public async StopGameListener() {
-        await this.wizardHub.connection.stop();
-        window.removeEventListener("keydown", this.keyEventHandler);
-        window.removeEventListener("keyup", this.keyEventHandler);
-        this.moveAxis.x = 0;
-        this.moveAxis.y = 0;
-    }
-
     private async KeyEvent(e: KeyboardEvent) {
         let key = e.key;
 
         if (key == 'w' || key == 'ц' || key == 'W' || key == 'Ц' || key == 'ArrowUp') {
-            this.moveAxis.y = e.type == 'keydown' ? -1 : 0;//await this.MovePlayer(0, -1);
+            this.moveAxis.y = e.type == 'keydown' ? -1 : 0;
         } else if (key == 'd' || key == 'в' || key == 'D' || key == 'В' || key == 'ArrowRight') {
-            this.moveAxis.x = e.type == 'keydown' ? 1 : 0; //await this.MovePlayer(1, 0);
+            this.moveAxis.x = e.type == 'keydown' ? 1 : 0;
         } else if (key == 's' || key == 'ы' || key == 'S' || key == 'Ы' || key == 'ArrowDown') {
-            this.moveAxis.y = e.type == 'keydown' ? 1 : 0;//await this.MovePlayer(0, 1);
+            this.moveAxis.y = e.type == 'keydown' ? 1 : 0;
         } else if (key == 'a' || key == 'ф' || key == 'A' || key == 'Ф' || key == 'ArrowLeft') {
-            this.moveAxis.x = e.type == 'keydown' ? -1 : 0;//await this.MovePlayer(-1, 0);
+            this.moveAxis.x = e.type == 'keydown' ? -1 : 0;
         }
     }
 
     private async FrameEvent() {
-        if (this.moveAxis.x != 0 || this.moveAxis.y != 0)
+        if (this.moveAxis.x != 0 || this.moveAxis.y != 0) {
             await this.wizardHub.connection.send(LobbyHub.moveWizard, this.moveAxis );
+        }
     }
 }

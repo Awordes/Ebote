@@ -1,7 +1,7 @@
 import { Application, Assets } from "pixi.js";
 import { ModalStore } from "./Components/ModalStore";
-import { MainScreen } from "./Screens/MainScreen";
-import { ScaleAndCenterToContainer, ScaleToContainer } from "../Utils/SizeHelper";
+import { CreateMainScreen, MainScreen } from "./Screens/MainScreen";
+import { ScaleAndCenterToContainer } from "../Utils/SizeHelper";
 import { AssetStore } from "../Utils/AssetStore";
 import { GameScreen } from "./Screens/GameScreen";
 import { GameConstantsModel, getConstants } from "../API";
@@ -22,11 +22,11 @@ export class ScreenLoader {
         this.modalStore = await ModalStore.Create();
         this.modalStore.scale.set(3);
 
-        this.mainScreen = await MainScreen.Create();
+        this.mainScreen = await CreateMainScreen();
         ScaleAndCenterToContainer(this.mainScreen, this.app.canvas, 0.9);
 
         this.gameScreen = await  GameScreen.Create();
-        ScaleToContainer(this.gameScreen, this.app.canvas);
+        ScaleAndCenterToContainer(this.gameScreen, this.app.canvas);
 
         this.app.stage.addChild(this.gameScreen);
         this.app.stage.addChild(this.mainScreen);

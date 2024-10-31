@@ -27,13 +27,22 @@ export class WizardView extends Container {
         switch (wizard.magicType)
         {
             case 0:
-                asset1 = AssetStore.wizardAir;
+                asset1 = AssetStore.wizardAirFrame1;
+                asset2 = AssetStore.wizardAirFrame2;
+                asset3 = AssetStore.wizardAirFrame3;
+                asset4 = AssetStore.wizardAirFrame4;
                 break;
             case 1:
-                asset1 = AssetStore.wizardEarth;
+                asset1 = AssetStore.wizardEarthFrame1;
+                asset2 = AssetStore.wizardEarthFrame2;
+                asset3 = AssetStore.wizardEarthFrame3;
+                asset4 = AssetStore.wizardEarthFrame4;
                 break;
             case 2:
-                asset1 = AssetStore.wizardFire;
+                asset1 = AssetStore.wizardFireFrame1;
+                asset2 = AssetStore.wizardFireFrame2;
+                asset3 = AssetStore.wizardFireFrame3;
+                asset4 = AssetStore.wizardFireFrame4;
                 break;
             case 3:
                 asset1 = AssetStore.wizardWaterFrame1;

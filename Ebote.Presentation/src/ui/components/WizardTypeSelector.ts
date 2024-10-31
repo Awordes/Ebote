@@ -8,8 +8,8 @@ export async function CreateWizardTypeSelector(): Promise<RadioGroup> {
     wizards.push(
         new CheckBox({
             style: {
-                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardAir),
-                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardAir),
+                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardAirFrame1),
+                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardAirFrame1),
             }
         })
     );
@@ -17,8 +17,8 @@ export async function CreateWizardTypeSelector(): Promise<RadioGroup> {
     wizards.push(
         new CheckBox({
             style: {
-                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardEarth),
-                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardEarth),
+                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardEarthFrame1),
+                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardEarthFrame1),
             }
         })
     );
@@ -26,8 +26,8 @@ export async function CreateWizardTypeSelector(): Promise<RadioGroup> {
     wizards.push(
         new CheckBox({
             style: {
-                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardFire),
-                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardFire),
+                unchecked: await CreateWizardButton(AssetStore.rectButtonDeafult, AssetStore.wizardFireFrame1),
+                checked: await CreateWizardButton(AssetStore.rectButtonPressed, AssetStore.wizardFireFrame1),
             }
         })
     );

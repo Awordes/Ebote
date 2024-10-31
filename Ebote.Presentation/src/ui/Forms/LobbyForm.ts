@@ -64,7 +64,6 @@ export class LobbyForm extends Container {
         );
 
         lobbyForm.startGameButton = await CreateButton(TextService.GetStringValue('startGame'));
-        lobbyForm.startGameButton.enabled = false;
 
         lobbyForm.startGameButton.position.set(
             lobbyForm.addWizardButton.x + lobbyForm.addWizardButton.width + 1,

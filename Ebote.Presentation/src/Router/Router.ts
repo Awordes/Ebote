@@ -1,57 +1,27 @@
 import { getAccountCheckAuth, getProfile, getProfileGetActiveLobbyState, postProfileUpdateActiveLobbyByLobbyId } from "../API";
 import { ScreenLoader } from "../UI/ScreenLoader";
-import { RouteLobby } from "./Routes/LobbyRouter";
 
 export async function InitRoute() {
     await ScreenLoader.Init();
 
     const currentRoute = window.location.hash;
-
-    const checkAuth = await getAccountCheckAuth();
-
-    if (!checkAuth.response.ok) {
-        await ScreenLoader.ShowModal('Необходима<br>авторизация');
-        await ShowLoginForm();
-        return;
-    }
-
+    
     if (currentRoute.startsWith('#/lobby/')) {
         let lobbyId = currentRoute.substring(8, currentRoute.length);
-
-        let response = await postProfileUpdateActiveLobbyByLobbyId({
-            path: {
-                lobbyId: lobbyId
-            }
-        });
-
-        if (response.response.ok) {
-            ScreenLoader.ShowModal('Обновлено активное<br>лобби.');
-            ScreenLoader.mainScreen.lobbyForm.id = lobbyId;
-            await Route('lobby');
-        } else {
-            ScreenLoader.ShowModal('Ошибка при<br>открытии лобби.');
-            await Route('menu');
-        }
+        await Route('lobby', lobbyId);
     } else {
         await Route('menu');
     }
-
-    let profile = await getProfile();
-    if (profile.data.activeLobby) {
-        await ScreenLoader.gameScreen.InitState();
-    }
 }
 
-export async function Route(route: 'login' | 'menu' | 'lobby' | 'game') {
+export async function Route(route: 'login' | 'menu' | 'lobby', lobbyId?: string) {
     const checkAuth = await getAccountCheckAuth();
 
     if (!checkAuth.response.ok) {
         await ScreenLoader.ShowModal('Необходима<br>авторизация');
-        await ShowLoginForm();
-        return;
+        route = 'login';
     }
 
-    ScreenLoader.mainScreen.HideContent();
     await StopGame();
 
     switch (route)
@@ -63,17 +33,14 @@ export async function Route(route: 'login' | 'menu' | 'lobby' | 'game') {
             await ShowMenuForm();
             break;
         case "lobby":
-            await RouteLobby();
-            break;
-        case "game":
-            await StartGame();
+            await ShowLobbyForm(lobbyId);
             break;
     }
+}
 
-    let profile = await getProfile();
-    if (profile.data.activeLobby) {
-        await ScreenLoader.gameScreen.InitState();
-    }
+async function ShowLoginForm() {
+    ScreenLoader.mainScreen.ShowLoginForm();
+    window.location.hash = '/login';
 }
 
 async function ShowMenuForm() {
@@ -84,28 +51,60 @@ async function ShowMenuForm() {
         return;
     }
 
-    if (profile.data.activeLobby?.id) {
-        ScreenLoader.mainScreen.menuForm.openLobbyButton.visible = true;
-        ScreenLoader.mainScreen.lobbyForm.id = profile.data.activeLobby.id;
-    } else {
-        ScreenLoader.mainScreen.menuForm.openLobbyButton.visible = false;
-    }
-
-    ScreenLoader.mainScreen.menuForm.visible = true;
+    ScreenLoader.mainScreen.ShowMenuForm(!!profile.data.activeLobby);
     window.location.hash = '/menu';
 }
 
-async function ShowLoginForm() {
-    ScreenLoader.mainScreen.loginForm.visible = true;
-    window.location.hash = '/login';
-}
+async function ShowLobbyForm(lobbyId?: string) {
+    if (lobbyId) {
+        let respone = await postProfileUpdateActiveLobbyByLobbyId({path: { lobbyId: lobbyId }});
+        if (respone.response.ok) {
+            ScreenLoader.ShowModal('Обновлено активное<br>лобби.');
+        } else {
+            ScreenLoader.ShowModal('Не удалось<br>обновить лобби.');
+        }
+    }
 
-async function StartGame() {
-    ScreenLoader.mainScreen.visible = false;
-    await ScreenLoader.gameScreen.StartGameListener();
+    let profile = await getProfile();
+
+    if (!profile.response.ok) {
+        await ScreenLoader.ShowModal('Ошибка при<br>получении профиля');
+        return;
+    }
+
+    let gameState = await getProfileGetActiveLobbyState();
+    ScreenLoader.mainScreen.lobbyForm.id = gameState.data.id;
+
+    if (!gameState.response.ok) {
+        await ScreenLoader.ShowModal('Ошибка при получении<br>состояния лобби.');
+        return;
+    }
+
+    window.location.hash = '/lobby/' + ScreenLoader.mainScreen.lobbyForm.id;
+
+    await ScreenLoader.gameScreen.StartLobbyListener();
+
+    if (gameState.data.isGameStarted) {
+        ScreenLoader.mainScreen.visible = false;
+        await ScreenLoader.gameScreen.StartGame();
+    } else {
+        let isWizardAlreadyAdded = false;
+    
+        for (let wizard of gameState.data.wizards) {
+            if (wizard.profileId == profile.data.id) {
+                isWizardAlreadyAdded = true;
+                break;
+            }
+        }
+    
+        ScreenLoader.mainScreen.ShowLobbyForm(
+            isWizardAlreadyAdded,
+            gameState.data.creatorId == profile.data.id
+        );
+    }
 }
 
 async function StopGame() {
-    ScreenLoader.mainScreen.visible = true;
-    await ScreenLoader.gameScreen.StopGameListener();
+    await ScreenLoader.gameScreen.StopGame();
+    await ScreenLoader.gameScreen.StopLobbyListener();
 }
