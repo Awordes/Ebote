@@ -9,8 +9,13 @@ export function ScaleToContainer(source: Container, dest: HTMLCanvasElement | Co
     source.scale.set(Math.min(source.scale.x, source.scale.y) * GetScaleToContainer(source, dest, factor));
 }
 
-export function CenterPosition(source: Container, dest: HTMLCanvasElement | Container) {
-    source.position.set((dest.width - source.width) / 2, (dest.height - source.height) / 2);
+export function CenterPosition(source: Container, dest: HTMLCanvasElement | Container, scaleType?: 'X' | 'Y') {
+    if (scaleType == 'X')
+        source.position.x = (dest.width - source.width) / 2;
+    else if (scaleType == 'Y')
+        source.position.y = (dest.height - source.height) / 2;
+    else
+        source.position.set((dest.width - source.width) / 2, (dest.height - source.height) / 2);
 }
 
 export function GetScaleToContainer(

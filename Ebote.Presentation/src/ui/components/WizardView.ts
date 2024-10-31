@@ -1,7 +1,7 @@
 import { Assets, Container, Graphics, HTMLText, Ticker, UnresolvedAsset } from "pixi.js";
 import { MagicType, Wizard } from "../../API";
 import { AssetStore } from "../../Utils/AssetStore";
-import { GetScaleToContainer, GetScaleToValue, ScaleToContainer } from "../../Utils/SizeHelper";
+import { CenterPosition, GetScaleToValue, ScaleToContainer } from "../../Utils/SizeHelper";
 import { ScreenLoader } from "../ScreenLoader";
 import { ProgressBar } from "@pixi/ui";
 
@@ -21,7 +21,6 @@ export class WizardView extends Container {
     public static async Create(wizard: Wizard): Promise<WizardView> {
         let wizardView = new WizardView();
 
-        
         await InitWizardSprite(wizardView, wizard.magicType);
         
         wizardView.spriteContainer = new Container();
@@ -35,17 +34,29 @@ export class WizardView extends Container {
         wizardView.hitPointBar.pivot.set(wizardView.hitPointBar.width / 2, wizardView.hitPointBar.height);
         wizardView.hitPointBar.position.x = wizardView.spriteContainer.width * 0.3;
 
+        let wizardNameBorder = new Graphics();
+        wizardNameBorder.rect(0, 0, ScreenLoader.constants.wizardWidth * 3, wizardView.hitPointBar.height * 5);
+        wizardNameBorder.fill({ color: 0x0 });
+
+        wizardView.wizardName = new HTMLText({
+            text: wizard.name,
+            style: {
+                fontFamily: AssetStore.monocraftFont.alias,
+                fontSize: 100,
+                wordWrap: true,
+                wordWrapWidth: 2700
+            }
+        });
+        ScaleToContainer(wizardView.wizardName, wizardNameBorder);
+        wizardView.wizardName.position.y -= wizardView.wizardName.height + wizardView.hitPointBar.height;
+        CenterPosition(wizardView.wizardName, wizardView.hitPointBar, 'X');
+
         wizardView.addChild(wizardView.spriteContainer);
         wizardView.addChild(wizardView.hitPointBar);
+        wizardView.addChild(wizardView.wizardName);
 
         wizardView.activeFrame = 1;
         ScreenLoader.app.ticker.add(wizardView.animationEventHandler);
-
-        // let border = new Graphics();
-        // border.rect(0, 0, ScreenLoader.constants.wizardWidth, ScreenLoader.constants.wizardHeight);
-        // border.stroke({width: 1, color: 0x000000});
-
-        // wizardView.addChild(border);
 
         return wizardView;
     }
