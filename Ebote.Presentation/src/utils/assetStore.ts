@@ -9,6 +9,12 @@ export class AssetStore {
         data: { parseAsGraphicsContext: true, }
     };
 
+    public static readonly menuScrollShadow: UnresolvedAsset = {
+        alias: 'menuScrollShadow',
+        src: 'public/sprites/menu-scroll-shadow.svg',
+        data: { parseAsGraphicsContext: true, }
+    };
+
     public static readonly buttonDefault: UnresolvedAsset = {
         alias: 'buttonDefault',
         src: 'public/sprites/button-default.svg',

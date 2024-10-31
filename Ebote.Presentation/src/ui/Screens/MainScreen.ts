@@ -1,6 +1,6 @@
 import { Assets, Container, Graphics } from "pixi.js";
 import { AssetStore } from "../../Utils/AssetStore";
-import { GetScaleToContainer, ScaleAndCenterToContainer } from "../../Utils/SizeHelper";
+import { GetScaleToContainer, ScaleAndCenterToContainer, ScaleToContainer } from "../../Utils/SizeHelper";
 import { LoginForm } from "../Forms/LoginForm";
 import { MagicType, postAccountLogin, postAccountLogout, postAccountSignUp, postLobby, postLobbyStart, postProfileAddWizard, SideType } from "../../API";
 import { ScreenLoader } from "../ScreenLoader";
@@ -31,11 +31,20 @@ export class MainScreen extends Container {
             mainScreen.gameName.height + 15
         );
 
+        let scrollShadow = new Graphics(await Assets.load(AssetStore.menuScrollShadow));
+        scrollShadow.alpha = 0.3;
+        ScaleToContainer(scrollShadow, mainScreen.scroll);
+        scrollShadow.position.set(
+            mainScreen.scroll.x + 20,
+            mainScreen.scroll.y + 20
+        );
+
         await mainScreen.CreateLoginForm();
         await mainScreen.CreateMenuForm();
         await mainScreen.CreateLobbyForm();
 
         mainScreen.addChild(mainScreen.gameName);
+        mainScreen.addChild(scrollShadow);
         mainScreen.addChild(mainScreen.scroll);
 
         mainScreen.HideContent();
