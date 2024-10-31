@@ -44,7 +44,8 @@ async function InitApplication(): Promise<Application> {
     await app.init({
         resizeTo: window,
         antialias: true,
-        backgroundAlpha: 0.3
+        backgroundAlpha: 0.3,
+        // backgroundColor: 0x66a824
     });
 
     app.canvas.style.position = 'absolute';
