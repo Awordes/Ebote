@@ -18,6 +18,8 @@ public class RectangleObjectAbstract: IGameObject
 
     public Point RightBottom { get; private set; }
 
+    public Point Center { get; private set; }
+
     public Guid Id { get; init; } = Guid.NewGuid();
     
     public RectangleObjectAbstract(float width, float height)
@@ -40,6 +42,7 @@ public class RectangleObjectAbstract: IGameObject
         LeftBottom = new Point(Position.X, Position.Y + Height);
         RightTop = new Point(Position.X + Width, Position.Y);
         RightBottom = new Point(Position.X + Width, Position.X + Height);
+        Center = new Point(Position.X + Width / 2, Position.Y + Height / 2);
     }
 
     public virtual void Move(Point positionChange)

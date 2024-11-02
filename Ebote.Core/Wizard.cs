@@ -2,15 +2,14 @@ using Ebote.Engine;
 
 namespace Ebote.Core;
 
-public class Wizard
-    (
-        Guid profileId,
-        MagicType magicType,
-        string name,
-        SideType sideType,
-        Point spawnPosition,
-        float width,
-        float height
+public class Wizard(
+    Guid profileId,
+    MagicType magicType,
+    string name,
+    SideType sideType,
+    Point spawnPosition,
+    float width,
+    float height
     ) : RectangleObjectAbstract(width, height)
 {
     public Guid ProfileId { get; init; } = profileId;
@@ -29,6 +28,8 @@ public class Wizard
 
     public Axis EyeDirection { get; set; }
 
+    public WizardState State { get; set; }
+
     public void GetDamage(float damage)
     {
         CurrentHitPoints -= damage;
@@ -40,13 +41,15 @@ public class Wizard
     public void Spawn()
     {
         CurrentHitPoints = GameConstants.Consts.StartHitPoints;
-        EyeDirection = sideType == SideType.Green ? new Axis(1, 0) : new Axis(-1, 0);
+        State = WizardState.Idle;
+        EyeDirection = SideType == SideType.Green ? new Axis(1, 0) : new Axis(-1, 0);
         ChangePosition(SpawnPosition);
     }
 
     public async Task Death()
     {
         TimeToReviveInSeconds = GameConstants.Consts.TimeToReviveInSeconds;
+        State = WizardState.Dead;
 
         while (TimeToReviveInSeconds > 0)
         {
@@ -59,7 +62,13 @@ public class Wizard
 
     public void Move(Axis axis)
     {
+        if (State == WizardState.Dead
+            || State == WizardState.ObeliskFilling)
+            return;
+
         EyeDirection = axis;
-        base.Move(new Point(axis.X * GameConstants.Consts.WizardSpeed, axis.Y * GameConstants.Consts.WizardSpeed));
+        base.Move(new Point(
+            axis.X * GameConstants.Consts.WizardSpeed,
+            axis.Y * GameConstants.Consts.WizardSpeed));
     }
 }

@@ -8,8 +8,6 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public Guid CreatorId { get; init; } = creatorId;
 
-    public float GameTimeInSeconds { get; private set; }
-
     public DateTime? StartTime { get; private set; }
 
     public DateTime CreateTime { get; init; } = DateTime.Now;
@@ -17,6 +15,8 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
     public DateTime LobbyEndTime { get; init; } = DateTime.Now.AddSeconds(GameConstants.Consts.GameLifeTimeInSeconds);
 
     public ICollection<Wizard> Wizards { get; init; } = [];
+
+    public ICollection<Bullet> Bullets { get; init; } = [];
 
     public void AddWizard(Guid profileId, MagicType magicType, SideType sideType, string name)
     {
@@ -36,7 +36,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
         Wizards.Add(wizard);
 
-        SetWizardsToDefaultPositions();
+        SetWizardsSpawnPositions();
     }
 
     public override void Start()
@@ -56,15 +56,79 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
             return Task.CompletedTask;
         }
 
-        foreach (var wizard in Wizards)
+        var bulletsToRemove = new List<Bullet>();
+        foreach (var bullet in Bullets)
         {
-            // todo
+            if (IsBorderCollision(bullet, bullet.EyeDirection))
+            {
+                bulletsToRemove.Add(bullet);
+                continue;
+            }
+
+            foreach (var wizard in Wizards)
+                if (wizard.IsCollision(bullet.Center))
+                {
+                    wizard.GetDamage(GameConstants.Consts.BulletDamage);
+                    bulletsToRemove.Add(bullet);
+                    continue;
+                }
+
+            bullet.MoveBullet();
         }
+
+        foreach (var bullet in bulletsToRemove)
+            Bullets.Remove(bullet);
 
         return Task.CompletedTask;
     }
 
-    private void SetWizardsToDefaultPositions()
+    public void MoveWizard(Guid profileId, Axis axis)
+    {
+        var wizard = Wizards.FirstOrDefault(x => x.ProfileId == profileId)
+            ?? throw new Exception("Wizard not found");
+
+        if (!IsBorderCollision(wizard, axis))
+            wizard.Move(axis);
+    }
+
+    public void Shoot(Guid profileId)
+    {
+        var wizard = Wizards.FirstOrDefault(x => x.ProfileId == profileId)
+            ?? throw new Exception("Wizard not found");
+
+        if (wizard.State == WizardState.Idle)
+            Bullets.Add(new Bullet(
+                wizard,
+                GameConstants.Consts.BulletWidth,
+                GameConstants.Consts.BulletHeight
+            ));
+    }
+
+    public void Undefence(Guid profileId)
+    {
+        var wizard = Wizards.FirstOrDefault(x => x.ProfileId == profileId)
+            ?? throw new Exception("Wizard not found");
+
+        if (wizard.State == WizardState.Defenced)
+            wizard.State = WizardState.Idle;
+    }
+
+    public void Defence(Guid profileId)
+    {
+        var wizard = Wizards.FirstOrDefault(x => x.ProfileId == profileId)
+            ?? throw new Exception("Wizard not found");
+
+        if (wizard.State == WizardState.Idle)
+            wizard.State = WizardState.Defenced;
+    }
+
+    private static bool IsBorderCollision(RectangleObjectAbstract obj, Axis axis)
+        => axis.X < 0 && obj.LeftTop.X < 0
+        || axis.Y < 0 && obj.LeftTop.Y < 0
+        || axis.X > 0 && obj.RightBottom.X > GameConstants.Consts.LobbyWidth
+        || axis.Y > 0 && obj.RightBottom.Y > GameConstants.Consts.LobbyHeight;
+
+    private void SetWizardsSpawnPositions()
     {
         var greenTeamCount = Wizards.Count(x => x.SideType == SideType.Green);
         var redTeamCount = Wizards.Count(x => x.SideType == SideType.Red);

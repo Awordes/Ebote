@@ -40,9 +40,48 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         if (!gameStorage.Lobbies.TryGetValue(userModel.ActiveLobbyId.Value, out var gameLobby))
             throw new Exception("Lobby not found");
 
-        var wizard = gameLobby.Wizards.FirstOrDefault(x => x.ProfileId == userModel.ProfileId)
-            ?? throw new Exception("Wizard not found in lobby");
-        
-        wizard.Move(axis);
+        gameLobby.MoveWizard(userModel.ProfileId, axis);
+    }
+
+    public void Shoot()
+    {
+        if (!Users.TryGetValue(Context.ConnectionId, out var userModel))
+            throw new Exception("Connection not found");
+
+        if (userModel.ActiveLobbyId is null)
+            throw new Exception("Active lobby not found");
+
+        if (!gameStorage.Lobbies.TryGetValue(userModel.ActiveLobbyId.Value, out var gameLobby))
+            throw new Exception("Lobby not found");
+
+        gameLobby.Shoot(userModel.ProfileId);
+    }
+
+    public void Defence()
+    {
+        if (!Users.TryGetValue(Context.ConnectionId, out var userModel))
+            throw new Exception("Connection not found");
+
+        if (userModel.ActiveLobbyId is null)
+            throw new Exception("Active lobby not found");
+
+        if (!gameStorage.Lobbies.TryGetValue(userModel.ActiveLobbyId.Value, out var gameLobby))
+            throw new Exception("Lobby not found");
+
+        gameLobby.Defence(userModel.ProfileId);
+    }
+
+    public void Undefence()
+    {
+        if (!Users.TryGetValue(Context.ConnectionId, out var userModel))
+            throw new Exception("Connection not found");
+
+        if (userModel.ActiveLobbyId is null)
+            throw new Exception("Active lobby not found");
+
+        if (!gameStorage.Lobbies.TryGetValue(userModel.ActiveLobbyId.Value, out var gameLobby))
+            throw new Exception("Lobby not found");
+
+        gameLobby.Undefence(userModel.ProfileId);
     }
 }
