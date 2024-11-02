@@ -2,8 +2,16 @@ using Ebote.Engine;
 
 namespace Ebote.Core;
 
-public class Wizard(Guid profileId, MagicType magicType, string name, SideType sideType, Point spawnPosition, float width, float height)
-    : RectangleObjectAbstract(width, height)
+public class Wizard
+    (
+        Guid profileId,
+        MagicType magicType,
+        string name,
+        SideType sideType,
+        Point spawnPosition,
+        float width,
+        float height
+    ) : RectangleObjectAbstract(width, height)
 {
     public Guid ProfileId { get; init; } = profileId;
 
@@ -32,6 +40,7 @@ public class Wizard(Guid profileId, MagicType magicType, string name, SideType s
     public void Spawn()
     {
         CurrentHitPoints = GameConstants.Consts.StartHitPoints;
+        EyeDirection = sideType == SideType.Green ? new Axis(1, 0) : new Axis(-1, 0);
         ChangePosition(SpawnPosition);
     }
 

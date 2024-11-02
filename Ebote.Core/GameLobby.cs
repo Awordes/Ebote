@@ -34,10 +34,6 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
             GameConstants.Consts.WizardWidth,
             GameConstants.Consts.WizardHeight);
 
-        wizard.EyeDirection = sideType == SideType.Green
-            ? new Axis(1, 0)
-            : new Axis(-1, 0);
-
         Wizards.Add(wizard);
 
         SetWizardsToDefaultPositions();
@@ -93,7 +89,8 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
                 j++;
             }
 
-            wizard.ChangePosition(new Point(x, y));
+            wizard.SpawnPosition = new Point(x, y);
+            wizard.Spawn();
         }
     }
 }

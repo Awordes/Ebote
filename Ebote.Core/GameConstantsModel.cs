@@ -2,8 +2,6 @@ namespace Ebote.Core;
 
 public class GameConstantsModel
 {
-    public float BulletDamage { get; init; }
-
     public float StartHitPoints { get; init; }
 
     public int GameTickInMilliseconds { get; init; }
@@ -14,9 +12,15 @@ public class GameConstantsModel
 
     public float WizardWidth { get; init; }
 
+    public float WizardSpeed { get; init; }
+
+    public float BulletDamage { get; init; }
+
     public float BulletHeight { get; init; }
 
     public float BulletWidth { get; init; }
+
+    public float BulletSpeed { get; init; }
 
     public float LobbyWidth { get; init; }
 
@@ -27,6 +31,4 @@ public class GameConstantsModel
     public float StartYMargin { get; init; }
 
     public int GameLifeTimeInSeconds { get; init; }
-
-    public float WizardSpeed { get; init; }
 }
