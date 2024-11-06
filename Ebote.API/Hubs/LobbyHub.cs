@@ -1,3 +1,4 @@
+using Ebote.API.Hubs.Models;
 using Ebote.Core;
 using Ebote.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +18,10 @@ public class LobbyHub(IProfileRepository profileRepository, GameStorage gameStor
 
         var profile = await profileRepository.GetByIdAsync(Guid.Parse(Context.UserIdentifier));
 
-        Users.Add(Context.ConnectionId, new WizardHubUserModel(Context.ConnectionId, profile.Id, profile.ActiveLobby?.Id));
+        Users.Add(
+            Context.ConnectionId,
+            new WizardHubUserModel(Context.ConnectionId, profile.Id, profile.ActiveLobby?.Id)
+        );
 
         await base.OnConnectedAsync();
     }

@@ -1,4 +1,4 @@
-namespace Ebote.API.Hubs;
+namespace Ebote.API.Hubs.Models;
 
 public record WizardHubUserModel(
     string ConnectionId,

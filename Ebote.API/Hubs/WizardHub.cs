@@ -1,3 +1,4 @@
+using Ebote.API.Hubs.Models;
 using Ebote.Core;
 using Ebote.Domain.Repositories;
 using Ebote.Engine;
