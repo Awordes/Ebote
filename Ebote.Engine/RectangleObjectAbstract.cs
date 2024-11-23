@@ -41,7 +41,7 @@ public class RectangleObjectAbstract: IGameObject
         LeftTop = Position;
         LeftBottom = new Point(Position.X, Position.Y + Height);
         RightTop = new Point(Position.X + Width, Position.Y);
-        RightBottom = new Point(Position.X + Width, Position.X + Height);
+        RightBottom = new Point(Position.X + Width, Position.Y + Height);
         Center = new Point(Position.X + Width / 2, Position.Y + Height / 2);
     }
 
