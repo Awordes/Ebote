@@ -2,15 +2,25 @@ using Ebote.Engine;
 
 namespace Ebote.Core;
 
-public class Bullet(Wizard wizard, float width, float height) : RectangleObjectAbstract(width, height)
+public class Bullet: RectangleObjectAbstract
 {
-    public Guid WizardId { get; set; } = wizard.Id;
+    public Guid WizardId { get; set; }
 
-    public SideType SideType { get; set; } = wizard.SideType;
+    public SideType SideType { get; set; }
 
-    public MagicType MagicType { get; set; } = wizard.MagicType;
+    public MagicType MagicType { get; set; }
 
-    public Axis EyeDirection { get; set; } = wizard.EyeDirection;
+    public Axis EyeDirection { get; set; }
+
+    public Bullet(Wizard wizard, float width, float height) : base(width, height)
+    {
+        WizardId = wizard.Id;
+        SideType = wizard.SideType;
+        MagicType = wizard.MagicType;
+        EyeDirection = wizard.EyeDirection;
+
+        ChangePosition(wizard.Center);
+    }
 
     public void MoveBullet()
     {

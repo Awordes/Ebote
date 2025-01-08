@@ -14,6 +14,8 @@ public class GameConstantsModel
 
     public float WizardSpeed { get; init; }
 
+    public float WizardAttackSpeed { get; init; }
+
     public float BulletDamage { get; init; }
 
     public float BulletHeight { get; init; }

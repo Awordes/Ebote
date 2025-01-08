@@ -1,4 +1,4 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, Ticker } from "pixi.js";
 import { LobbyHub } from "../../SignalR/LobbyHub";
 import { ScreenLoader } from "../ScreenLoader";
 import { GameLobby, Axis } from "../../API";
@@ -6,12 +6,15 @@ import { WizardView } from "../Components/WizardView";
 import { WizardHub } from "../../SignalR/WizardHub";
 import { HubConnectionState } from "@microsoft/signalr";
 import { Route } from "../../Router/Router";
+import { BulletView, CreateBulletView } from "../Components/BulletView";
 
 export class GameScreen extends Container {
     private lobbyHub: LobbyHub = new LobbyHub();
     private wizardHub: WizardHub = new WizardHub();
     private wizards: WizardView[] = [];
+    private bullets: BulletView[] = [];
     private moveAxis: Axis = { x: 0, y: 0 };
+    private isBulletShot: boolean = false;
     private keyEventHandler = this.KeyEvent.bind(this);
     private frameEventHandler = this.FrameEvent.bind(this);
     private isGameStarted: boolean = false;
@@ -75,11 +78,21 @@ export class GameScreen extends Container {
         for (let element of gamestate.wizards) {
             let wizard = this.wizards[element.id];
             if (!wizard) {
-                let newwizard = await WizardView.Create(element);
-                this.wizards[element.id] = newwizard;
-                this.addChild(newwizard);
+                wizard = await WizardView.Create(element);
+                this.wizards[element.id] = wizard;
+                this.addChild(wizard);
             }
             await wizard.UpdateWizard(element);
+        }
+
+        for (let element of gamestate.bullets) {
+            let bullet = this.bullets[element.id];
+            if (!bullet) {
+                bullet = await CreateBulletView(element);
+                this.bullets[element.id] = bullet;
+                this.addChild(bullet);
+            }
+            await bullet.UpdateBullet(element);
         }
     }
 
@@ -88,18 +101,28 @@ export class GameScreen extends Container {
 
         if (key == 'w' || key == 'ц' || key == 'W' || key == 'Ц' || key == 'ArrowUp') {
             this.moveAxis.y = e.type == 'keydown' ? -1 : 0;
+
         } else if (key == 'd' || key == 'в' || key == 'D' || key == 'В' || key == 'ArrowRight') {
             this.moveAxis.x = e.type == 'keydown' ? 1 : 0;
+
         } else if (key == 's' || key == 'ы' || key == 'S' || key == 'Ы' || key == 'ArrowDown') {
             this.moveAxis.y = e.type == 'keydown' ? 1 : 0;
+
         } else if (key == 'a' || key == 'ф' || key == 'A' || key == 'Ф' || key == 'ArrowLeft') {
             this.moveAxis.x = e.type == 'keydown' ? -1 : 0;
+
+        } else if (key == 'i' || key == 'ш' || key == 'I' || key == 'Ш') {
+            this.isBulletShot = e.type == 'keydown';
         }
     }
 
-    private async FrameEvent() {
+    private async FrameEvent(ticker: Ticker) {
         if (this.moveAxis.x != 0 || this.moveAxis.y != 0) {
-            await this.wizardHub.connection.send(LobbyHub.moveWizard, this.moveAxis );
+            await this.wizardHub.connection.send(WizardHub.moveWizard, this.moveAxis);
+        }
+
+        if (this.isBulletShot) {
+            await this.wizardHub.connection.send(WizardHub.shoot);
         }
     }
 }

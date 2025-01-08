@@ -31,13 +31,59 @@ export const AxisSchema = {
     additionalProperties: false
 } as const;
 
-export const GameConstantsModelSchema = {
+export const BulletSchema = {
     type: 'object',
     properties: {
-        bulletDamage: {
+        position: {
+            '$ref': '#/components/schemas/Point'
+        },
+        height: {
             type: 'number',
             format: 'float'
         },
+        width: {
+            type: 'number',
+            format: 'float'
+        },
+        leftTop: {
+            '$ref': '#/components/schemas/Point'
+        },
+        leftBottom: {
+            '$ref': '#/components/schemas/Point'
+        },
+        rightTop: {
+            '$ref': '#/components/schemas/Point'
+        },
+        rightBottom: {
+            '$ref': '#/components/schemas/Point'
+        },
+        center: {
+            '$ref': '#/components/schemas/Point'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        wizardId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        sideType: {
+            '$ref': '#/components/schemas/SideType'
+        },
+        magicType: {
+            '$ref': '#/components/schemas/MagicType'
+        },
+        eyeDirection: {
+            '$ref': '#/components/schemas/Axis'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const GameConstantsModelSchema = {
+    type: 'object',
+    properties: {
         startHitPoints: {
             type: 'number',
             format: 'float'
@@ -58,11 +104,23 @@ export const GameConstantsModelSchema = {
             type: 'number',
             format: 'float'
         },
+        wizardSpeed: {
+            type: 'number',
+            format: 'float'
+        },
+        bulletDamage: {
+            type: 'number',
+            format: 'float'
+        },
         bulletHeight: {
             type: 'number',
             format: 'float'
         },
         bulletWidth: {
+            type: 'number',
+            format: 'float'
+        },
+        bulletSpeed: {
             type: 'number',
             format: 'float'
         },
@@ -85,10 +143,6 @@ export const GameConstantsModelSchema = {
         gameLifeTimeInSeconds: {
             type: 'integer',
             format: 'int32'
-        },
-        wizardSpeed: {
-            type: 'number',
-            format: 'float'
         }
     },
     additionalProperties: false
@@ -113,11 +167,6 @@ export const GameLobbySchema = {
             type: 'string',
             format: 'uuid'
         },
-        gameTimeInSeconds: {
-            type: 'number',
-            format: 'float',
-            readOnly: true
-        },
         startTime: {
             type: 'string',
             format: 'date-time',
@@ -136,6 +185,13 @@ export const GameLobbySchema = {
             type: 'array',
             items: {
                 '$ref': '#/components/schemas/Wizard'
+            },
+            nullable: true
+        },
+        bullets: {
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/Bullet'
             },
             nullable: true
         }
@@ -239,6 +295,9 @@ export const WizardSchema = {
         rightBottom: {
             '$ref': '#/components/schemas/Point'
         },
+        center: {
+            '$ref': '#/components/schemas/Point'
+        },
         id: {
             type: 'string',
             format: 'uuid'
@@ -271,6 +330,9 @@ export const WizardSchema = {
         },
         eyeDirection: {
             '$ref': '#/components/schemas/Axis'
+        },
+        state: {
+            '$ref': '#/components/schemas/WizardState'
         }
     },
     additionalProperties: false
@@ -292,4 +354,10 @@ export const WizardModelSchema = {
         }
     },
     additionalProperties: false
+} as const;
+
+export const WizardStateSchema = {
+    enum: [0, 1, 2, 3, 4],
+    type: 'integer',
+    format: 'int32'
 } as const;

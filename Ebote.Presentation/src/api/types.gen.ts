@@ -10,21 +10,38 @@ export type Axis = {
     y?: number;
 };
 
+export type Bullet = {
+    position?: Point;
+    height?: number;
+    width?: number;
+    leftTop?: Point;
+    leftBottom?: Point;
+    rightTop?: Point;
+    rightBottom?: Point;
+    center?: Point;
+    id?: string;
+    wizardId?: string;
+    sideType?: SideType;
+    magicType?: MagicType;
+    eyeDirection?: Axis;
+};
+
 export type GameConstantsModel = {
-    bulletDamage?: number;
     startHitPoints?: number;
     gameTickInMilliseconds?: number;
     timeToReviveInSeconds?: number;
     wizardHeight?: number;
     wizardWidth?: number;
+    wizardSpeed?: number;
+    bulletDamage?: number;
     bulletHeight?: number;
     bulletWidth?: number;
+    bulletSpeed?: number;
     lobbyWidth?: number;
     lobbyHeight?: number;
     startXMargin?: number;
     startYMargin?: number;
     gameLifeTimeInSeconds?: number;
-    wizardSpeed?: number;
 };
 
 export type GameLobby = {
@@ -32,11 +49,11 @@ export type GameLobby = {
     readonly isGameStarted?: boolean;
     id?: string;
     creatorId?: string;
-    readonly gameTimeInSeconds?: number;
     readonly startTime?: (string) | null;
     createTime?: string;
     lobbyEndTime?: string;
     wizards?: Array<Wizard> | null;
+    bullets?: Array<Bullet> | null;
 };
 
 export type Lobby = {
@@ -68,6 +85,7 @@ export type Wizard = {
     leftBottom?: Point;
     rightTop?: Point;
     rightBottom?: Point;
+    center?: Point;
     id?: string;
     profileId?: string;
     name?: (string) | null;
@@ -77,6 +95,7 @@ export type Wizard = {
     timeToReviveInSeconds?: number;
     spawnPosition?: Point;
     eyeDirection?: Axis;
+    state?: WizardState;
 };
 
 export type WizardModel = {
@@ -84,6 +103,8 @@ export type WizardModel = {
     sideType?: SideType;
     magicType?: MagicType;
 };
+
+export type WizardState = 0 | 1 | 2 | 3 | 4;
 
 export type PostAccountSignUpData = {
     body?: AccountModel;

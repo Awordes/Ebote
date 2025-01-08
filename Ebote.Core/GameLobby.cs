@@ -25,14 +25,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
         if (Wizards.Any(x => x.ProfileId == profileId))
             throw new Exception("Profile already added.");
 
-        var wizard = new Wizard(
-            profileId,
-            magicType,
-            name,
-            sideType,
-            new Point(0, 0),
-            GameConstants.Consts.WizardWidth,
-            GameConstants.Consts.WizardHeight);
+        var wizard = new Wizard(profileId, magicType, name, sideType, new Point(0, 0));
 
         Wizards.Add(wizard);
 
@@ -66,7 +59,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
             }
 
             foreach (var wizard in Wizards)
-                if (wizard.IsCollision(bullet.Center))
+                if (wizard.SideType != bullet.SideType && wizard.IsCollision(bullet.Center))
                 {
                     wizard.GetDamage(GameConstants.Consts.BulletDamage);
                     bulletsToRemove.Add(bullet);
@@ -96,12 +89,10 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
         var wizard = Wizards.FirstOrDefault(x => x.ProfileId == profileId)
             ?? throw new Exception("Wizard not found");
 
-        if (wizard.State == WizardState.Idle)
-            Bullets.Add(new Bullet(
-                wizard,
-                GameConstants.Consts.BulletWidth,
-                GameConstants.Consts.BulletHeight
-            ));
+        var bullet = wizard.Shoot();
+
+        if (bullet is not null)
+            Bullets.Add(bullet);
     }
 
     public void Undefence(Guid profileId)
