@@ -556,3 +556,4 @@ package-lock.json
 /lib/
 
 pgdata
+.vscode
