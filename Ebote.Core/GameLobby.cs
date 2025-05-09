@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Ebote.Engine;
 
 namespace Ebote.Core;
@@ -16,7 +17,9 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
 
     public ICollection<Wizard> Wizards { get; init; } = [];
 
-    public ICollection<Bullet> Bullets { get; init; } = [];
+    public Bullet[] Bullets => [.. BulletDict.Values];
+
+    private ConcurrentDictionary<Guid, Bullet> BulletDict { get; init; } = [];
 
     public void AddWizard(Guid profileId, MagicType magicType, SideType sideType, string name)
     {
@@ -49,12 +52,12 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
             return Task.CompletedTask;
         }
 
-        var bulletsToRemove = new List<Bullet>();
-        foreach (var bullet in Bullets)
+        var bulletsToRemove = new List<Guid>();
+        foreach (var (key, bullet) in BulletDict)
         {
             if (IsBorderCollision(bullet, bullet.EyeDirection))
             {
-                bulletsToRemove.Add(bullet);
+                bulletsToRemove.Add(key);
                 continue;
             }
 
@@ -62,7 +65,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
                 if (wizard.SideType != bullet.SideType && wizard.IsCollision(bullet.Center))
                 {
                     wizard.GetDamage(GameConstants.Consts.BulletDamage);
-                    bulletsToRemove.Add(bullet);
+                    bulletsToRemove.Add(key);
                     continue;
                 }
 
@@ -70,7 +73,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
         }
 
         foreach (var bullet in bulletsToRemove)
-            Bullets.Remove(bullet);
+            BulletDict.TryRemove(bullet, out var _);
 
         return Task.CompletedTask;
     }
@@ -92,7 +95,7 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
         var bullet = wizard.Shoot();
 
         if (bullet is not null)
-            Bullets.Add(bullet);
+            BulletDict.TryAdd(bullet.Id, bullet);
     }
 
     public void Undefence(Guid profileId)
