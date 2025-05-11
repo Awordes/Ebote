@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npm run esbuild && npm run copyhtml && npm run copyassets",
+    "build": "npm run esbuild && npm run copyhtml && npm run copycss && npm run copyassets",
     "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../Ebote.API/wwwroot/index.js --format=esm",
     "copyhtml": "copyfiles -u 1 src/**/*.html ../Ebote.API/wwwroot/",
+    "copycss": "copyfiles -u 1 src/**/*.css ../Ebote.API/wwwroot/",
     "copyassets": "copyfiles -u 1 public/**/* ../Ebote.API/wwwroot/public",
     "api": "openapi-ts"
   },
@@ -17,13 +18,13 @@
     "@hey-api/openapi-ts": "^0.53.6",
     "@types/node": "22.7.4",
     "copyfiles": "2.4.1",
-    "esbuild": "0.24.0",
+    "esbuild": "0.25.4",
     "esbuild-plugin-tsc": "0.4.0"
   },
   "dependencies": {
     "@hey-api/client-fetch": "0.4.0",
     "@microsoft/signalr": "8.0.7",
     "@pixi/ui": "2.1.5",
-    "pixi.js": "8.4.1"
+    "pixi.js": "8.9.2"
   }
 }

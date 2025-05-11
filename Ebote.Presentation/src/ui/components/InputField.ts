@@ -1,152 +1,36 @@
-import { ButtonOptions, FancyButton, } from "@pixi/ui";
-import { Assets, Graphics, Sprite, Text, Texture, Ticker } from "pixi.js";
-import { AssetStore } from "../../Utils/AssetStore";
+import { Container, DOMContainer, Graphics } from "pixi.js";
 
-export class InputField extends FancyButton {
-    protected isPlaceholderVisible: boolean;
-    protected placeholder: string;
-
-    public fieldValue: string;
-
-    protected innerText: Text;
-    protected tick = 0;
-    protected isInputFocus = false;
-    protected isEditing = false;
-    protected textCursor: Sprite;
-
-    protected addKeyHandler = this.AddKey.bind(this);
-
-    protected tickerHandler = (ticker: Ticker) => {
-        this.tick += ticker.deltaTime * 0.05;
-
-        if (this.tick < 1 && this.textCursor.alpha == 1)
-            this.textCursor.alpha = 0;
-
-        else if (this.tick > 1 && this.textCursor.alpha == 0)
-            this.textCursor.alpha = 1;
-
-        if (this.tick > 2)
-            this.tick = 0;
+export class InputField extends Container {
+    public _fieldValue: string;
+    public get fieldValue() : string {
+        return this.inputElement.value;
     }
+
+    public inputElement: HTMLInputElement;
+    protected domContainer: DOMContainer;
 
     public static async Create(placeholder?: string): Promise<InputField> {
-        return new InputField(placeholder, {
-            text: new Text({
-                text: '',
-                style: {
-                    fontFamily: AssetStore.monocraftFont.alias,
-                    fontSize: 100,
-                }
-            }),
-            padding: 3.9,
-            defaultView: new Graphics(await Assets.load(AssetStore.input)),
-            textOffset: { y: -1.5 },
-        });
-    }
+        let inputField = new InputField();
 
-    constructor(placeholder?: string, options?: ButtonOptions) {
-        var innerText: Text;
-        var defaultText: string;
-        
-        if (!placeholder)
-            placeholder = ' ';
+        inputField.inputElement = document.createElement('input');
+        inputField.inputElement.placeholder = placeholder;
+        inputField.inputElement.classList.add('input-field');
 
-        if (options.text instanceof Text) {
-            innerText = options.text;
-            defaultText = innerText.text;
-            options.text.text = placeholder;
-        } else if (typeof options.text === 'string') {
-            innerText = new Text();
-            innerText.text = options.text;
-            defaultText = innerText.text;
-            options.text = placeholder;
-        }
+        let loginHtmlContainer = new DOMContainer({ element: inputField.inputElement });
 
-        super(options);
-
-        this.innerText = innerText;
-        this.placeholder = placeholder;
-        this.fieldValue = defaultText;
-        this.innerText.text = placeholder;
-        this.isPlaceholderVisible = true;
-
-        window.addEventListener('click', () => { this.Click(); });
-
-        this.onclick = (() => { this.isInputFocus = true; });
-
-        this.CreateCursor();
-    }
-
-    protected CreateCursor() {
-        this.textCursor = new Sprite(Texture.WHITE);
-        this.innerView.addChild(this.textCursor);
-
-        this.textCursor.tint = 0x000000;
-        this.textCursor.alpha = 0;
-        this.textCursor.position.set(0, 0);
-        this.textCursor.anchor.set(0, 1);
-
-        this.ResizeCursor();
-    }
-
-    protected ResizeCursor() {
-        this.textCursor.width = 0.5;
-        this.textCursor.height = this.innerText.height * 0.8;
-        this.textCursor.position.set(
-            this.innerText.x + this.innerText.width / 2,
-            this.innerText.y + this.innerText.height / 2
+        let border = new Graphics();
+        border.rect(
+            0,
+            0,
+            50,
+            13
         );
-    }
+        border.stroke({ width: 1, color: 0x000000 });
+        border.alpha = 0;
 
-    protected async Click(): Promise<void> {
-        if (this.isInputFocus) {
-            this.StartEditing();
-            this.isInputFocus = false;
-        }
-        else if (this.isEditing) {
-            this.StopEditing();
-        }
-    }
+        inputField.addChild(loginHtmlContainer);
+        inputField.addChild(border);
 
-    protected async StartEditing(): Promise<void> {
-        this.isPlaceholderVisible = false;
-        this.isEditing = true;
-        this.innerText.text = this.fieldValue;        
-        Ticker.shared.add(this.tickerHandler);
-        this.textCursor.alpha = 1;
-        this.updateAnchor();
-        this.ResizeCursor();
-        window.addEventListener('keyup', this.addKeyHandler);
-    }
-
-    protected StopEditing() {
-        this.isEditing = false;
-        this.textCursor.alpha = 0;
-        Ticker.shared.remove(this.tickerHandler);
-        this.tick = 0;
-
-        if (this.fieldValue === "")
-            this.innerText.text = this.placeholder;
-
-        this.isPlaceholderVisible = true;
-        this.updateAnchor();
-        window.removeEventListener('keyup', this.addKeyHandler);
-    }
-
-    protected AddKey(e: KeyboardEvent) {
-        if (e.key === 'Backspace') {
-            this.innerText.text = this.innerText.text.substring(0, this.innerText.text.length - 1);
-            this.fieldValue = this.innerText.text;
-        }
-        else if (e.key === 'Escape' || e.key === 'Enter') {
-            this.StopEditing();
-        }
-        else if (e.key.length === 1) {
-            this.innerText.text += e.key;
-            this.fieldValue = this.innerText.text;
-        }
-
-        this.updateAnchor();
-        this.ResizeCursor();
+        return inputField;
     }
 }

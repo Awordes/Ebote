@@ -26,13 +26,13 @@ export async function Route(route: 'login' | 'menu' | 'lobby', lobbyId?: string)
 
     switch (route)
     {
-        case "login":
+        case 'login':
             await ShowLoginForm();
             break;
-        case "menu":
+        case 'menu':
             await ShowMenuForm();
             break;
-        case "lobby":
+        case 'lobby':
             await ShowLobbyForm(lobbyId);
             break;
     }

@@ -16,7 +16,7 @@ export class ScreenLoader {
     public static async Init() {
         this.app = await InitApplication();
         document.body.appendChild(this.app.canvas);
-        
+
         this.constants = (await getConstants()).data;
 
         this.modalStore = await ModalStore.Create();

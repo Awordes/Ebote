@@ -75,17 +75,16 @@ export async function CreateMainScreen(): Promise<MainScreen> {
     mainScreen.HideContent();
 
     return mainScreen;
-
 }
 
 async function CreateContentBox(mainScreen: MainScreen) {
     mainScreen.content = new Container();
-    let border = new Graphics();
     let leftPadding = 28;
     let rightPadding = 5;
     let topPadding = 13;
     let bottomPadding = 15;
 
+    let border = new Graphics();
     border.rect(
         0,
         0,
@@ -104,7 +103,7 @@ async function CreateLoginForm(mainScreen: MainScreen) {
     mainScreen.loginForm = await LoginForm.Create();
     ScaleAndCenterToContainer(mainScreen.loginForm, mainScreen.content);
 
-    mainScreen.loginForm.loginButton.on('pointerup', async () => { 
+    mainScreen.loginForm.loginButton.on('pointerup', async () => {
         let response = await postAccountLogin({
             body: {
                 login: mainScreen.loginForm.loginInput.fieldValue,
@@ -116,7 +115,7 @@ async function CreateLoginForm(mainScreen: MainScreen) {
             ScreenLoader.ShowModal('Не удалось<br>авторизоваться.');
             return;
         }
-        
+
         await Route('menu');
     });
 
@@ -191,7 +190,7 @@ async function CreateLobbyForm(mainScreen: MainScreen) {
                 sideType: mainScreen.lobbyForm.sideType.selected as SideType
             }
         });
-        
+
         if (response.response.ok) {
             await Route('lobby');
         } else {
