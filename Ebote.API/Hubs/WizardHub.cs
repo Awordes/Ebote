@@ -44,7 +44,7 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         gameLobby.MoveWizard(userModel.ProfileId, axis);
     }
 
-    public void Shoot()
+    public void Shoot(Point? pointerPoint)
     {
         if (!Users.TryGetValue(Context.ConnectionId, out var userModel))
             throw new Exception("Connection not found");
@@ -55,7 +55,7 @@ public class WizardHub(IProfileRepository profileRepository, GameStorage gameSto
         if (!gameStorage.Lobbies.TryGetValue(userModel.ActiveLobbyId.Value, out var gameLobby))
             throw new Exception("Lobby not found");
 
-        gameLobby.Shoot(userModel.ProfileId);
+        gameLobby.Shoot(userModel.ProfileId, pointerPoint);
     }
 
     public void Defence()

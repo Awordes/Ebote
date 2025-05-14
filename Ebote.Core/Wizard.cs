@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Ebote.Engine;
 
 namespace Ebote.Core;
@@ -23,6 +22,10 @@ public class Wizard(
 
     public float CurrentHitPoints { get; private set; }
 
+    public float MaxHitPoints { get; private set; }
+
+    public float CurrentSpeed { get; private set; }
+
     public Axis EyeDirection { get; set; }
 
     public WizardState State { get; set; } = WizardState.Idle;
@@ -31,14 +34,15 @@ public class Wizard(
 
     private bool NextShootAvailable { get; set; } = true;
 
-    public Bullet? Shoot()
+    public Bullet? Shoot(Axis? axis)
     {
         if (!IsAbleToShoot() || !NextShootAvailable) return null;
 
         var bullet = new Bullet(
             this,
             GameConstants.Consts.BulletWidth,
-            GameConstants.Consts.BulletHeight
+            GameConstants.Consts.BulletHeight,
+            axis
         );
 
         _ = WaitToNextShoot();
@@ -66,6 +70,8 @@ public class Wizard(
     public void Spawn()
     {
         CurrentHitPoints = GameConstants.Consts.StartHitPoints;
+        MaxHitPoints = GameConstants.Consts.StartHitPoints;
+        CurrentSpeed = GameConstants.Consts.WizardSpeed;
         State = WizardState.Idle;
         EyeDirection = SideType == SideType.Green ? new Axis(1, 0) : new Axis(-1, 0);
         ChangePosition(SpawnPosition);
@@ -91,8 +97,8 @@ public class Wizard(
 
         EyeDirection = axis;
         base.Move(new Point(
-            axis.X * GameConstants.Consts.WizardSpeed,
-            axis.Y * GameConstants.Consts.WizardSpeed
+            axis.X * CurrentSpeed,
+            axis.Y * CurrentSpeed
         ));
     }
 
@@ -101,6 +107,19 @@ public class Wizard(
         || State == WizardState.Moving;
 
     private bool IsAbleToMove()
-        => State != WizardState.Defenced
-        && State != WizardState.Dead;
+        => State != WizardState.Dead;
+    
+    public void Defence()
+    {
+        CurrentSpeed = GameConstants.Consts.WizardSpeed * 0.6F;
+
+        State = WizardState.Defenced;
+    }
+
+    public void Undefence()
+    {
+        CurrentSpeed = GameConstants.Consts.WizardSpeed;
+
+        State = WizardState.Idle;
+    }
 }

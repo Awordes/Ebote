@@ -5,67 +5,93 @@ import type { PostAccountSignUpData, PostAccountSignUpError, PostAccountSignUpRe
 
 export const client = createClient(createConfig());
 
-export const postAccountSignUp = <ThrowOnError extends boolean = false>(options?: Options<PostAccountSignUpData, ThrowOnError>) => { return (options?.client ?? client).post<PostAccountSignUpResponse, PostAccountSignUpError, ThrowOnError>({
-    ...options,
-    url: '/Account/SignUp'
-}); };
+export const postAccountSignUp = <ThrowOnError extends boolean = false>(options?: Options<PostAccountSignUpData, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostAccountSignUpResponse, PostAccountSignUpError, ThrowOnError>({
+        ...options,
+        url: '/Account/SignUp'
+    });
+};
 
-export const postAccountLogin = <ThrowOnError extends boolean = false>(options?: Options<PostAccountLoginData, ThrowOnError>) => { return (options?.client ?? client).post<PostAccountLoginResponse, PostAccountLoginError, ThrowOnError>({
-    ...options,
-    url: '/Account/Login'
-}); };
+export const postAccountLogin = <ThrowOnError extends boolean = false>(options?: Options<PostAccountLoginData, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostAccountLoginResponse, PostAccountLoginError, ThrowOnError>({
+        ...options,
+        url: '/Account/Login'
+    });
+};
 
-export const postAccountLogout = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).post<PostAccountLogoutResponse, PostAccountLogoutError, ThrowOnError>({
-    ...options,
-    url: '/Account/Logout'
-}); };
+export const postAccountLogout = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostAccountLogoutResponse, PostAccountLogoutError, ThrowOnError>({
+        ...options,
+        url: '/Account/Logout'
+    });
+};
 
-export const getAccountCheckAuth = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).get<GetAccountCheckAuthResponse, GetAccountCheckAuthError, ThrowOnError>({
-    ...options,
-    url: '/Account/CheckAuth'
-}); };
+export const getAccountCheckAuth = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetAccountCheckAuthResponse, GetAccountCheckAuthError, ThrowOnError>({
+        ...options,
+        url: '/Account/CheckAuth'
+    });
+};
 
-export const getConstants = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).get<GetConstantsResponse, GetConstantsError, ThrowOnError>({
-    ...options,
-    url: '/Constants'
-}); };
+export const getConstants = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetConstantsResponse, GetConstantsError, ThrowOnError>({
+        ...options,
+        url: '/Constants'
+    });
+};
 
-export const postLobby = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).post<PostLobbyResponse, PostLobbyError, ThrowOnError>({
-    ...options,
-    url: '/Lobby'
-}); };
+export const postLobby = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostLobbyResponse, PostLobbyError, ThrowOnError>({
+        ...options,
+        url: '/Lobby'
+    });
+};
 
-export const getLobbyList = <ThrowOnError extends boolean = false>(options?: Options<GetLobbyListData, ThrowOnError>) => { return (options?.client ?? client).get<GetLobbyListResponse, GetLobbyListError, ThrowOnError>({
-    ...options,
-    url: '/Lobby/List'
-}); };
+export const getLobbyList = <ThrowOnError extends boolean = false>(options?: Options<GetLobbyListData, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetLobbyListResponse, GetLobbyListError, ThrowOnError>({
+        ...options,
+        url: '/Lobby/List'
+    });
+};
 
-export const getLobbyActive = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).get<GetLobbyActiveResponse, GetLobbyActiveError, ThrowOnError>({
-    ...options,
-    url: '/Lobby/Active'
-}); };
+export const getLobbyActive = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetLobbyActiveResponse, GetLobbyActiveError, ThrowOnError>({
+        ...options,
+        url: '/Lobby/Active'
+    });
+};
 
-export const postLobbyStart = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).post<PostLobbyStartResponse, PostLobbyStartError, ThrowOnError>({
-    ...options,
-    url: '/Lobby/Start'
-}); };
+export const postLobbyStart = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostLobbyStartResponse, PostLobbyStartError, ThrowOnError>({
+        ...options,
+        url: '/Lobby/Start'
+    });
+};
 
-export const getProfile = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).get<GetProfileResponse, GetProfileError, ThrowOnError>({
-    ...options,
-    url: '/Profile'
-}); };
+export const getProfile = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetProfileResponse, GetProfileError, ThrowOnError>({
+        ...options,
+        url: '/Profile'
+    });
+};
 
-export const postProfileAddWizard = <ThrowOnError extends boolean = false>(options?: Options<PostProfileAddWizardData, ThrowOnError>) => { return (options?.client ?? client).post<PostProfileAddWizardResponse, PostProfileAddWizardError, ThrowOnError>({
-    ...options,
-    url: '/Profile/AddWizard'
-}); };
+export const postProfileAddWizard = <ThrowOnError extends boolean = false>(options?: Options<PostProfileAddWizardData, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostProfileAddWizardResponse, PostProfileAddWizardError, ThrowOnError>({
+        ...options,
+        url: '/Profile/AddWizard'
+    });
+};
 
-export const getProfileGetActiveLobbyState = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => { return (options?.client ?? client).get<GetProfileGetActiveLobbyStateResponse, GetProfileGetActiveLobbyStateError, ThrowOnError>({
-    ...options,
-    url: '/Profile/GetActiveLobbyState'
-}); };
+export const getProfileGetActiveLobbyState = <ThrowOnError extends boolean = false>(options?: Options<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetProfileGetActiveLobbyStateResponse, GetProfileGetActiveLobbyStateError, ThrowOnError>({
+        ...options,
+        url: '/Profile/GetActiveLobbyState'
+    });
+};
 
-export const postProfileUpdateActiveLobbyByLobbyId = <ThrowOnError extends boolean = false>(options: Options<PostProfileUpdateActiveLobbyByLobbyIdData, ThrowOnError>) => { return (options?.client ?? client).post<PostProfileUpdateActiveLobbyByLobbyIdResponse, PostProfileUpdateActiveLobbyByLobbyIdError, ThrowOnError>({
-    ...options,
-    url: '/Profile/UpdateActiveLobby/{lobbyId}'
-}); };
+export const postProfileUpdateActiveLobbyByLobbyId = <ThrowOnError extends boolean = false>(options: Options<PostProfileUpdateActiveLobbyByLobbyIdData, ThrowOnError>) => {
+    return (options?.client ?? client).post<PostProfileUpdateActiveLobbyByLobbyIdResponse, PostProfileUpdateActiveLobbyByLobbyIdError, ThrowOnError>({
+        ...options,
+        url: '/Profile/UpdateActiveLobby/{lobbyId}'
+    });
+};

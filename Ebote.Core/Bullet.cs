@@ -12,12 +12,12 @@ public class Bullet: RectangleObjectAbstract
 
     public Axis EyeDirection { get; set; }
 
-    public Bullet(Wizard wizard, float width, float height) : base(width, height)
+    public Bullet(Wizard wizard, float width, float height, Axis? axis = null) : base(width, height)
     {
         WizardId = wizard.Id;
         SideType = wizard.SideType;
         MagicType = wizard.MagicType;
-        EyeDirection = wizard.EyeDirection;
+        EyeDirection = axis ?? wizard.EyeDirection;
 
         ChangePosition(wizard.Center);
     }

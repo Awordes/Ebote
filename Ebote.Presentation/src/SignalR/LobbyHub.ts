@@ -1,7 +1,7 @@
 import * as signalR from "@microsoft/signalr";
 
 export class LobbyHub {
-    public readonly hubName = 'LobbyHub';
+    public readonly hubName = 'lobby';
     public static readonly getWizardActiveLobbyAsync = 'GetWizardActiveLobbyAsync';
     public connection: signalR.HubConnection;
 

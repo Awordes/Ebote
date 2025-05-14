@@ -1,7 +1,7 @@
-import { Container, Graphics, Ticker } from "pixi.js";
+import { Container, FederatedPointerEvent, Graphics, Ticker } from "pixi.js";
 import { LobbyHub } from "../../SignalR/LobbyHub";
 import { ScreenLoader } from "../ScreenLoader";
-import { GameLobby, Axis } from "../../API";
+import { GameLobby, Axis, Point } from "../../API";
 import { WizardView } from "../Components/WizardView";
 import { WizardHub } from "../../SignalR/WizardHub";
 import { HubConnectionState } from "@microsoft/signalr";
@@ -14,16 +14,22 @@ export class GameScreen extends Container {
     private wizards: WizardView[] = [];
     private bullets: BulletView[] = [];
     private moveAxis: Axis = { x: 0, y: 0 };
+    private pointerPosition: Point = { x: 0, y: 0};
     private isBulletShot: boolean = false;
     private keyEventHandler = this.KeyEvent.bind(this);
+    private pointerMoveEventHandler = this.PointerMoveEvent.bind(this);
+    private pointerDownEventHandler = this.PointerDownEvent.bind(this);
+    private pointerUpEventHandler = this.PointerUpEvent.bind(this);
     private frameEventHandler = this.FrameEvent.bind(this);
     private isGameStarted: boolean = false;
 
     public static async Create(): Promise<GameScreen> {
         let gameScreen = new GameScreen();
+        gameScreen.eventMode = 'static';
 
         let border = new Graphics();
-        border.rect(0, 0, ScreenLoader.constants.lobbyWidth, ScreenLoader.constants.lobbyHeight);
+        border.rect(0, 0, ScreenLoader.constants.lobbyWidth, ScreenLoader.constants.lobbyHeight)
+            .fill({ alpha: 0, color: 0x000000 });
         border.stroke({ width: 1, color: 0x000000 });
         border.alpha = 1;
 
@@ -33,9 +39,7 @@ export class GameScreen extends Container {
     }
 
     public async StartLobbyListener() {
-        if (this.lobbyHub.connection.state != HubConnectionState.Disconnected) {
-            await this.lobbyHub.connection.stop();
-        }
+        await this.lobbyHub.connection.stop();
 
         this.lobbyHub.connection.on(
             LobbyHub.getWizardActiveLobbyAsync,
@@ -53,15 +57,18 @@ export class GameScreen extends Container {
     }
 
     public async StopLobbyListener() {
-        if (this.lobbyHub.connection.state != HubConnectionState.Disconnected) {
-            await this.lobbyHub.connection.stop();
-        }
+        await this.lobbyHub.connection.stop();
     }
 
     public async StartGame() {
         await this.wizardHub.connection.start();
+
         window.addEventListener("keydown", this.keyEventHandler);
         window.addEventListener("keyup", this.keyEventHandler);
+        this.on('pointerdown', this.pointerDownEventHandler);
+        this.on('pointerup', this.pointerUpEventHandler);
+        this.on('pointermove', this.pointerMoveEventHandler);
+        this.on('pointerleave', () => { this.isBulletShot = false; })
         ScreenLoader.app.ticker.add(this.frameEventHandler);
         this.moveAxis = { x: 0, y: 0};
     }
@@ -70,6 +77,10 @@ export class GameScreen extends Container {
         await this.wizardHub.connection.stop();
         window.removeEventListener("keydown", this.keyEventHandler);
         window.removeEventListener("keyup", this.keyEventHandler);
+        this.off('pointerdown', this.pointerDownEventHandler);
+        this.off('pointerup', this.pointerUpEventHandler);
+        this.off('pointermove', this.pointerMoveEventHandler);
+        this.off('pointerleave');
         ScreenLoader.app.ticker.remove(this.frameEventHandler);
         this.moveAxis = { x: 0, y: 0};
     }
@@ -96,6 +107,21 @@ export class GameScreen extends Container {
         }
     }
 
+    private async PointerMoveEvent(e: FederatedPointerEvent) {
+        let xScale = ScreenLoader.constants.lobbyWidth / this.width;
+        let yScale = ScreenLoader.constants.lobbyHeight / this.height;
+        this.pointerPosition.x = (e.x - this.position.x) * xScale;
+        this.pointerPosition.y = (e.y - this.position.y) * yScale;
+    }
+
+    private async PointerUpEvent() {
+        this.isBulletShot = false;
+    }
+
+    private async PointerDownEvent() {
+        this.isBulletShot = true;
+    }
+
     private async KeyEvent(e: KeyboardEvent) {
         let key = e.key;
 
@@ -110,9 +136,6 @@ export class GameScreen extends Container {
 
         } else if (key == 'a' || key == 'ф' || key == 'A' || key == 'Ф' || key == 'ArrowLeft') {
             this.moveAxis.x = e.type == 'keydown' ? -1 : 0;
-
-        } else if (key == 'i' || key == 'ш' || key == 'I' || key == 'Ш') {
-            this.isBulletShot = e.type == 'keydown';
         }
     }
 
@@ -122,7 +145,7 @@ export class GameScreen extends Container {
         }
 
         if (this.isBulletShot) {
-            await this.wizardHub.connection.send(WizardHub.shoot);
+            await this.wizardHub.connection.send(WizardHub.shoot, this.pointerPosition);
         }
     }
 }

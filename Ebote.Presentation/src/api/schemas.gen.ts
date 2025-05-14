@@ -108,6 +108,10 @@ export const GameConstantsModelSchema = {
             type: 'number',
             format: 'float'
         },
+        wizardAttackSpeed: {
+            type: 'number',
+            format: 'float'
+        },
         bulletDamage: {
             type: 'number',
             format: 'float'
@@ -193,7 +197,8 @@ export const GameLobbySchema = {
             items: {
                 '$ref': '#/components/schemas/Bullet'
             },
-            nullable: true
+            nullable: true,
+            readOnly: true
         }
     },
     additionalProperties: false
@@ -313,26 +318,36 @@ export const WizardSchema = {
         sideType: {
             '$ref': '#/components/schemas/SideType'
         },
+        magicType: {
+            '$ref': '#/components/schemas/MagicType'
+        },
+        spawnPosition: {
+            '$ref': '#/components/schemas/Point'
+        },
         currentHitPoints: {
             type: 'number',
             format: 'float',
             readOnly: true
         },
-        magicType: {
-            '$ref': '#/components/schemas/MagicType'
+        maxHitPoints: {
+            type: 'number',
+            format: 'float',
+            readOnly: true
         },
-        timeToReviveInSeconds: {
-            type: 'integer',
-            format: 'int32'
-        },
-        spawnPosition: {
-            '$ref': '#/components/schemas/Point'
+        currentSpeed: {
+            type: 'number',
+            format: 'float',
+            readOnly: true
         },
         eyeDirection: {
             '$ref': '#/components/schemas/Axis'
         },
         state: {
             '$ref': '#/components/schemas/WizardState'
+        },
+        timeToReviveInSeconds: {
+            type: 'integer',
+            format: 'int32'
         }
     },
     additionalProperties: false
@@ -357,7 +372,7 @@ export const WizardModelSchema = {
 } as const;
 
 export const WizardStateSchema = {
-    enum: [0, 1, 2, 3, 4],
+    enum: [0, 1, 2, 3, 4, 5],
     type: 'integer',
     format: 'int32'
 } as const;

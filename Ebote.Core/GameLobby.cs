@@ -87,12 +87,25 @@ public class GameLobby(Guid id, Guid creatorId) : GameCycleAbstract(GameConstant
             wizard.Move(axis);
     }
 
-    public void Shoot(Guid profileId)
+    public void Shoot(Guid profileId, Point? pointerPoint)
     {
         var wizard = Wizards.FirstOrDefault(x => x.ProfileId == profileId)
             ?? throw new Exception("Wizard not found");
+        
+        Axis? axis = null;
 
-        var bullet = wizard.Shoot();
+        if (pointerPoint.HasValue)
+        {
+            float line = (float)Math.Sqrt(Math.Pow(pointerPoint.Value.X - wizard.Center.X, 2)
+                + Math.Pow(pointerPoint.Value.Y - wizard.Center.Y, 2));
+
+            float x1 = (wizard.Center.X + 1 / line * pointerPoint.Value.X) / (1 + 1 / line);
+            float y1 = (wizard.Center.Y + 1 / line * pointerPoint.Value.Y) / (1 + 1 / line);
+
+            axis = new Axis(x1 - wizard.Center.X, y1 - wizard.Center.Y);
+        }
+
+        var bullet = wizard.Shoot(axis);
 
         if (bullet is not null)
             BulletDict.TryAdd(bullet.Id, bullet);

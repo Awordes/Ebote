@@ -79,8 +79,8 @@ export async function CreateMainScreen(): Promise<MainScreen> {
 
 async function CreateContentBox(mainScreen: MainScreen) {
     mainScreen.content = new Container();
-    let leftPadding = 28;
-    let rightPadding = 5;
+    let leftPadding = 23;
+    let rightPadding = 8;
     let topPadding = 13;
     let bottomPadding = 15;
 
