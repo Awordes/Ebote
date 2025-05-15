@@ -5,8 +5,8 @@
   "scripts": {
     "build": "npm run esbuild && npm run copyhtml && npm run copycss && npm run copyassets",
     "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../backend/Ebote.API/wwwroot/index.js --format=esm",
-    "copyhtml": "copyfiles -u 1 src/**/*.html ../backend/Ebote.API/wwwroot/",
-    "copycss": "copyfiles -u 1 src/**/*.css ../backend/Ebote.API/wwwroot/",
+    "copyhtml": "copyfiles -u 1 src/index.html ../backend/Ebote.API/wwwroot/",
+    "copycss": "copyfiles -u 1 src/index.css ../backend/Ebote.API/wwwroot/",
     "copyassets": "copyfiles -u 1 public/**/* ../backend/Ebote.API/wwwroot/public",
     "api": "openapi-ts"
   },
