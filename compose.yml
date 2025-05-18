@@ -1,5 +1,5 @@
 services:
-  ebote:
+  app:
     build: ./
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
@@ -9,13 +9,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Release
     depends_on:
-      ebote-db:
+      db:
         condition: service_healthy
 
-  ebote-db:
+  db:
     image: postgres:17.2-alpine
-    ports:
-      - 5432:5432
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:

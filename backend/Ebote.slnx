@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Ebote.API/Ebote.API.csproj" />
+  <Project Path="Ebote.Core/Ebote.Core.csproj" />
+  <Project Path="Ebote.Domain/Ebote.Domain.csproj" />
+  <Project Path="Ebote.Engine/Ebote.Engine.csproj" />
+  <Project Path="Ebote.Infrastructure/Ebote.Infrastructure.csproj" />
+</Solution>

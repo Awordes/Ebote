@@ -4,10 +4,10 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run esbuild && npm run copyhtml && npm run copycss && npm run copyassets",
-    "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../Ebote.API/wwwroot/index.js --format=esm",
-    "copyhtml": "copyfiles -u 1 src/**/*.html ../Ebote.API/wwwroot/",
-    "copycss": "copyfiles -u 1 src/**/*.css ../Ebote.API/wwwroot/",
-    "copyassets": "copyfiles -u 1 public/**/* ../Ebote.API/wwwroot/public",
+    "esbuild": "esbuild src/index.ts --bundle --platform=node --outfile=../backend/Ebote.API/wwwroot/index.js --format=esm",
+    "copyhtml": "copyfiles -u 1 src/index.html ../backend/Ebote.API/wwwroot/",
+    "copycss": "copyfiles -u 1 src/index.css ../backend/Ebote.API/wwwroot/",
+    "copyassets": "copyfiles \"public/**/*\" ../backend/Ebote.API/wwwroot/",
     "api": "openapi-ts"
   },
   "keywords": [],
